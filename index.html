@@ -55,6 +55,7 @@ header.top{display:flex;flex-direction:column;gap:6px}
 label{font-weight:600;font-size:.92rem}
 input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:11px 12px;width:100%}
 input.code{font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+input.code::placeholder{text-transform:none;letter-spacing:0;font-family:var(--body)}
 textarea{font-family:var(--mono);font-size:.85rem;min-height:120px}
 :focus-visible{outline:3px solid var(--azafran);outline-offset:2px}
 .btn{font:inherit;font-weight:700;border:0;border-radius:4px;padding:13px 18px;background:var(--mar);color:var(--mar-ink);cursor:pointer}
@@ -139,7 +140,7 @@ footer{font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 1
   <main id="view"><section class="sheet"><h2>Esta vista previa no puede abrir la app</h2><p>Estás viendo el archivo en una vista previa, que no ejecuta la aplicación. Pasa a menudo en iPhone al abrirlo desde WhatsApp, Correo o Archivos.</p><p>Pide al profesor el enlace de la app y ábrelo en Safari o Chrome.</p></section></main>
   <footer>
     <span>OBR · 1º CFGM Servicios en Restauración · CIPFP Dénia</span>
-    <span>Prototipo v0.4 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
+    <span>Prototipo v0.4.1 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
   </footer>
 </div>
 
@@ -2638,7 +2639,7 @@ function leerCodigo(line){ var p=line.trim().toUpperCase().split("-"); if(p.leng
   return { alias:p[1], est:p[2], ac:ac, intento:it, ok: hash(base+"|"+SERVICIO.claveDia)===p[5] }; }
 function nota(ac){ return ac*2; }
 var view=document.getElementById("view");
-function show(nodes){ view.replaceChildren.apply(view,nodes); window.scrollTo(0,0); }
+function show(nodes){ view.replaceChildren.apply(view,nodes.filter(function(n){ return n!=null; })); window.scrollTo(0,0); }
 
 function chrome(){
   document.getElementById("eyebrow").textContent = S.teacher ? "Profesorado · servicios reales OBR" : (SERVICIO && S.paso>=0 ? (SERVICIO.n!=null?"Servicio real nº "+SERVICIO.n+" · ":"Servicio real · ")+SERVICIO.nombre+" · "+SERVICIO.fecha : "Servicios reales · OBR · 1º CFGM");
