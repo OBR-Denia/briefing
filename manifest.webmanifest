@@ -1,0 +1,16 @@
+{
+  "name": "Briefing del servicio · OBR",
+  "short_name": "Briefing",
+  "description": "Repaso antes del servicio: orden de trabajo, menú, alérgenos y 5 preguntas.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef3f4",
+  "theme_color": "#0a6577",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

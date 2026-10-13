@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a6577">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Briefing">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style></head><body>
+<title>Briefing del servicio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: una sola columna de móvil, como un bloc de comandas; cada paso es una hoja y los pases se separan con la línea de la minuta. */
+:root{
+  --bg:#eef3f4; --surface:#ffffff; --sunk:#e3ebed; --ink:#0f252c; --muted:#52676f; --line:#c9d6da;
+  --mar:#0a6577; --mar-ink:#ffffff; --azafran:#b27c00; --azafran-bg:#fbf0cf;
+  --ok:#1c7a4a; --ok-bg:#dff3e7; --bad:#b3372d; --bad-bg:#fbe4e1;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c1a1f; --surface:#14272e; --sunk:#0f2026; --ink:#e6eff1; --muted:#9bb0b7; --line:#2b434b;
+  --mar:#5cc3d6; --mar-ink:#06222a; --azafran:#f0c04a; --azafran-bg:#3a2f0c;
+  --ok:#6fd39c; --ok-bg:#123524; --bad:#ff9d92; --bad-bg:#42191a; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0c1a1f; --surface:#14272e; --sunk:#0f2026; --ink:#e6eff1; --muted:#9bb0b7; --line:#2b434b;
+  --mar:#5cc3d6; --mar-ink:#06222a; --azafran:#f0c04a; --azafran-bg:#3a2f0c;
+  --ok:#6fd39c; --ok-bg:#123524; --bad:#ff9d92; --bad-bg:#42191a; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:640px;margin-inline:auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:1.9rem;font-weight:700}
+h2{font-size:1.35rem;font-weight:700}
+h3{font-size:1.02rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .small{font-size:.88rem}
+header.top{display:flex;flex-direction:column;gap:6px}
+.who{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.88rem}
+.tag{font-family:var(--mono);font-size:.76rem;padding:2px 8px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.tag.st{background:var(--mar);color:var(--mar-ink);border-color:var(--mar);font-weight:600}
+
+.steps{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;list-style:none;padding:0;margin:0}
+.steps li{height:6px;border-radius:3px;background:var(--line)}
+.steps li.done{background:var(--mar)} .steps li.now{background:var(--azafran)}
+.stepname{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
+
+#view{display:flex;flex-direction:column;gap:14px}
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.stack{display:flex;flex-direction:column;gap:10px}
+.field{display:flex;flex-direction:column;gap:4px}
+label{font-weight:600;font-size:.92rem}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:11px 12px;width:100%}
+input.code{font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+textarea{font-family:var(--mono);font-size:.85rem;min-height:120px}
+:focus-visible{outline:3px solid var(--azafran);outline-offset:2px}
+.btn{font:inherit;font-weight:700;border:0;border-radius:4px;padding:13px 18px;background:var(--mar);color:var(--mar-ink);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--mar);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row .btn{flex:1 1 140px}
+.linkbtn{font:inherit;background:none;border:0;padding:0;color:var(--mar);text-decoration:underline;cursor:pointer}
+.err{color:var(--bad);font-weight:600;font-size:.92rem}
+
+.note{background:var(--azafran-bg);border-left:4px solid var(--azafran);padding:10px 12px;font-size:.92rem;border-radius:0 4px 4px 0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.95rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:600}
+.phase{display:grid;grid-template-columns:7.2rem 1fr;gap:4px 12px;padding-block:8px;border-top:1px dashed var(--line)}
+.phase:first-of-type{border-top:0}
+.phase b{font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mar);padding-top:3px}
+.phase span{min-width:0}
+ol.rut{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;counter-reset:r}
+ol.rut li{display:grid;grid-template-columns:1.6rem 6rem 1fr;gap:8px;font-size:.93rem;counter-increment:r}
+ol.rut li::before{content:counter(r);font-family:var(--mono);color:var(--muted)}
+ol.rut li b{color:var(--mar)}
+ol.rut li.me{background:var(--azafran-bg);margin-inline:-6px;padding:4px 6px;border-radius:4px}
+
+.pase{display:flex;flex-direction:column;gap:8px}
+.sep{font-family:var(--mono);color:var(--muted);text-align:center;white-space:nowrap;overflow:hidden;font-size:.85rem;user-select:none}
+.pase .n{font-family:var(--mono);font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--azafran)}
+.pase ul{margin:0;padding-left:1.1rem}
+.marc{display:grid;grid-template-columns:5.2rem 1fr;gap:4px 12px;font-size:.93rem}
+.marc dt{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:3px}
+.marc dd{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.82rem;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--bad-bg);color:var(--bad)}
+.chip.maybe{background:var(--sunk);color:var(--muted);border:1px dashed var(--line)}
+.dish{display:flex;flex-direction:column;gap:6px;padding-block:10px;border-top:1px dashed var(--line)}
+.dish:first-of-type{border-top:0}
+.wine{display:grid;grid-template-columns:1.6rem 1fr auto;gap:2px 10px;padding-block:9px;border-top:1px dashed var(--line);align-items:baseline}
+.wine:first-of-type{border-top:0}
+.wine .o{font-family:var(--mono);color:var(--muted)}
+.wine .t{font-family:var(--mono);font-size:.82rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.wine .d{grid-column:2 / -1;font-size:.88rem;color:var(--muted)}
+.wine .k{font-size:.72rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mar)}
+
+.q{display:flex;flex-direction:column;gap:10px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:left;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:12px 14px;cursor:pointer}
+.opt.sel{border-color:var(--mar);box-shadow:inset 0 0 0 2px var(--mar)}
+.opt.good{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.why{font-size:.9rem;padding:8px 12px;background:var(--sunk);border-radius:4px}
+.score{font-family:var(--display);font-size:3.4rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.verdict{font-weight:700;padding:3px 10px;border-radius:4px;display:inline-block}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)} .verdict.no{background:var(--bad-bg);color:var(--bad)}
+.rescode{font-family:var(--mono);font-size:1.15rem;font-weight:600;letter-spacing:.04em;background:var(--sunk);border:2px dashed var(--mar);border-radius:4px;padding:14px;text-align:center;overflow-wrap:anywhere;user-select:all}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+footer{font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between}
+@media (max-width:420px){ .phase{grid-template-columns:1fr} ol.rut li{grid-template-columns:1.4rem 1fr} ol.rut li span{grid-column:2} h1{font-size:1.6rem} }
+@media (prefers-reduced-motion:no-preference){ .sheet{animation:in .18s ease-out} @keyframes in{from{transform:translateY(4px)}to{transform:none}} }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow" id="eyebrow"></p>
+    <h1>Briefing del servicio</h1>
+    <div class="who" id="who" hidden></div>
+  </header>
+  <div id="progress" hidden>
+    <ol class="steps" id="steps"></ol>
+    <p class="stepname" id="stepname"></p>
+  </div>
+  <main id="view"><section class="sheet"><h2>Esta vista previa no puede abrir la app</h2><p>Estás viendo el archivo en una vista previa, que no ejecuta la aplicación. Pasa a menudo en iPhone al abrirlo desde WhatsApp, Correo o Archivos.</p><p>Pide al profesor el enlace de la app y ábrelo en Safari o Chrome.</p></section></main>
+  <footer>
+    <span>OBR · 1º CFGM Servicios en Restauración · CIPFP Dénia</span>
+    <span>Prototipo v0.3 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
+  </footer>
+</div>
+
+<script>
+/* ============ DATOS DEL SERVICIO (lo único que cambia de un servicio a otro) ============ */
+var SERVICIO = {
+  n: 0, codigo: "S00", nombre: "Restaurante «Tancat»", fecha: "viernes 23/10/2026",
+  ot: "OT-0 · Menú 0", tipo: "Emplatado (a la americana)",
+  claveDia: "TANCAT23", claveProfe: "DENIA-OBR",
+  aprobado: 4, // aciertos mínimos de 5
+  pax: null, apertura: null, mesas: null,
+  alergenosConfirmados: false,
+  sinVino: true, // el 23/10 no se sirven vinos: se ocultan el paso de vinos, la copa de cada pase y las preguntas de vino
+  montajeBase: "Muletón, mantel y cubremantel · plato peana · servilleta doblada en el centro del cubierto · primeros cubiertos · plato de pan a la izquierda · copa de agua · salero y pimentero. Solo se colocan los primeros cubiertos: el resto se marca en cada pase.",
+  pases: [
+    { n:"1. Entrantes", platos:["Canelón de melón con jamón de pato y vinagreta de pistachos","Tartar de salmón con mango y vinagreta de jengibre","Pan bao con pulled pork y encurtidos"],
+      marcaje:"Ya marcados en el montaje: tenedor de postre → izquierda · cuchillo de postre → derecha.", nota:"El pan bao se come con la mano: no se marca nada más.", copa:"Agua + vino blanco" },
+    { n:"2. Arroz", platos:["Arroz a banda"],
+      marcaje:"Tenedor trinchero → derecha.", nota:"Arroz sin guarnición (Ficha 21): solo tenedor trinchero, a la derecha.", copa:"Vino blanco" },
+    { n:"3. Arroz", platos:["Arroz de secreto y setas"],
+      marcaje:"Cuchillo trinchero → derecha · tenedor trinchero → izquierda.", nota:"Arroz con guarnición (Ficha 21): cuchillo y tenedor trinchero.", copa:"Vino tinto (o rosado)" },
+    { n:"4. Postre", platos:["Tarta Tatin con cremoso de vainilla"],
+      marcaje:"Cuchillo de postre → derecha · tenedor de postre → izquierda · cuchara de postre → derecha, exterior (opcional).", nota:"Antes: retirar saleros y plato de pan; quitar migas.", copa:"Vino dulce o cava (si lo hay)" }
+  ],
+  rutina: [
+    ["CA","Comedor","Desbarasa el plato anterior y sus cubiertos (Fichas 18 y 19)."],
+    ["CA","Comedor","Marca los cubiertos del plato siguiente, sin pasar la mano por delante del cliente (Fichas 20 y 21)."],
+    ["SU","Sumilleres","Sirven y reponen el agua, y apoyan al rango. Hoy no se sirve vino."],
+    ["MA","Maître","Comprueba que la mesa está marcada y pide la «marcha» a cocina."],
+    ["TR","Transfer","Avisa del plato en el pase; Comedor lo recoge y sirve por la derecha, todos los comensales a la vez."]
+  ],
+  /* seguro = se deduce del nombre del plato; preguntar = depende de la receta de cocina */
+  alergenos: [
+    { plato:"Canelón de melón con jamón de pato y vinagreta de pistachos", seguro:["Frutos de cáscara"], preguntar:["Sulfitos","Mostaza"] },
+    { plato:"Tartar de salmón con mango y vinagreta de jengibre", seguro:["Pescado"], preguntar:["Soja","Sésamo","Sulfitos"] },
+    { plato:"Pan bao con pulled pork y encurtidos", seguro:["Gluten"], preguntar:["Soja","Leche","Mostaza","Sulfitos"] },
+    { plato:"Arroz a banda", seguro:["Pescado"], preguntar:["Crustáceos","Moluscos","Huevo (alioli)"] },
+    { plato:"Arroz de secreto y setas", seguro:[], preguntar:["Apio (caldo)","Sulfitos"] },
+    { plato:"Tarta Tatin con cremoso de vainilla", seguro:["Gluten","Leche"], preguntar:["Huevo"] }
+  ],
+  vinos: [
+    ["Cava","Cava Vega Medien Brut ecológico","DO Cava · Requena · macabeo y chardonnay. Seco, pero más amable que el brut nature.","6-8 °C"],
+    ["Blanco","Marina Alta","DO Alicante · Bodegas Bocopa · moscatel de Alejandría (seco). Muy aromático y fresco, flores blancas.","7-10 °C"],
+    ["Blanco","Marqués de Irún Verdejo","DO Rueda · verdejo. Fruta blanca, hierba fresca, final amargoso.","7-9 °C"],
+    ["Blanco","Bach Extrísimo seco","DO Catalunya · chardonnay, xarel·lo, macabeo y moscatel. Fresco y frutal.","7-9 °C"],
+    ["Rosado","Cava Vega Medien Rosado ecológico","DO Cava · Requena · garnacha. Fruta roja; cremoso y fresco. Se sirve en copa de blanco.","6-8 °C"],
+    ["Tinto","Protocolo tinto","IGP VT Castilla · tempranillo. Sencillo, afrutado, de trago fácil.","14-16 °C"],
+    ["Tinto","J. Fernando Tempranillo 6 meses","IGP VT Castilla · El Toboso · tempranillo. 6 meses en barrica; tanino sedoso.","15-16 °C"],
+    ["Tinto","Santpere tinto","DO Valencia · Moixent. Roble, 8 meses en barrica; fruta madura, cuerpo medio.","15-16 °C"]
+  ]
+};
+
+var ESTACIONES = {
+  MA:{ nombre:"Maître", n:1, clave:"Croquis y rangos; acogida y acomodación; da la «marcha» de cada pase a cocina; facturación y despedida.",
+       f1:"Croquis de la sala y rangos entregados; reservas y mesas comprobadas; número de comensales y peticiones especiales; briefing a la brigada.",
+       f2:"Recepción y acomodación; ritmo de las mesas; supervisión de todas las estaciones; peticiones e incidencias.",
+       f3:"Facturación y cobro sin errores; despedida; revista final de la sala." },
+  SU:{ nombre:"Sumilleres", n:5, clave:"Copas del montaje; vino de cada pase; retirar las copas que ya no se usen.",
+       f1:"Bodega o carro revisado; vinos a temperatura; cristalería de vino repasada; carta de vinos del día.",
+       f2:"Comanda, recomendación y maridaje; presentación de la botella, apertura, cata y escanciado.",
+       f3:"Retirada de copas con bandeja; repaso de cristalería; cierre de bodega o carro." },
+  BA:{ nombre:"Barra", n:2, clave:"Aperitivos, refrescos y cafés e infusiones; apoyo a Comedor en el traslado de bebidas.",
+       f1:"Encender y purgar la cafetera; moler café; calentar tazas. Enfriar agua, refrescos y cervezas; hielo y limón. Jarras de agua fría para Comedor.",
+       f2:"Preparar las bebidas que pide Comedor y entregarlas en bandeja. Anotar cada consumición para la factura del Maître. Cafés e infusiones después del postre, nunca a la vez.",
+       f3:"Limpiar la cafetera y las superficies; recuento de consumiciones y de material (Ficha 13)." },
+  CA:{ nombre:"Comedor · Restaurante", n:6, clave:"Montaje base; marcaje antes de cada plato; servicio y desbarasado de sus mesas.",
+       f1:"Rangos con mesas vestidas y marcadas según el croquis del Maître; aparador montado.",
+       f2:"Toma de comanda; servicio emplatado; marcaje entre platos; atención a la mesa.",
+       f3:"Desbarasado de platos, cubiertos y copas; recogida de mantelería; mesas listas." },
+  CF:{ nombre:"Comedor · Familia", n:4, clave:"Servicio de familia en placares antes de abrir; después, se incorpora a las mesas del restaurante.",
+       f1:"Vestir las mesas de placares con manteles de papel, cubertería, cristalería y vajilla. Preparar bufé, pinzas, fuentes y cazos.",
+       f2:"Servir la comida de familia y reponer agua y pan. Al terminar, pasar al comedor y trabajar como Comedor.",
+       f3:"Desbarasar y llevar todo al office ordenado; recoger, repasar y dejar los placares listos." },
+  TR:{ nombre:"Transfer cocina", n:1, clave:"Enlace cocina-sala: avisa cuando el plato está en el pase y lleva el desbarasado al office.",
+       f1:"Office y pase revisados; bandejas y vajilla caliente preparadas; tiempos de salida acordados con cocina.",
+       f2:"Transporte de platos sin inclinar ni manchar; salidas sincronizadas con Comedor.",
+       f3:"Traslado del desbarasado al office; organización del lavado de vajilla y cristalería." }
+};
+
+/* Banco de preguntas. c = respuesta correcta; x = distractores; cat = bloque; est = solo para esa estación */
+var BANCO = [
+ {cat:"marcaje", p:"¿Qué se marca antes de servir el arroz a banda?", c:"Solo tenedor trinchero, a la derecha", x:["Cuchillo trinchero a la derecha y tenedor trinchero a la izquierda","Cuchara sopera a la derecha","Pala y tenedor de pescado"], w:"Arroz sin guarnición (Ficha 21): solo tenedor trinchero, a la derecha."},
+ {cat:"marcaje", p:"¿Qué se marca antes del arroz de secreto y setas?", c:"Cuchillo trinchero a la derecha y tenedor trinchero a la izquierda", x:["Solo tenedor trinchero, a la derecha","Cuchara sopera a la derecha y tenedor a la izquierda","Tenedor y cuchillo de postre"], w:"Arroz con guarnición (Ficha 21): cuchillo y tenedor trinchero."},
+ {cat:"marcaje", p:"La mesa se abre con los cubiertos de los entrantes ya puestos. ¿Cuáles son?", c:"Tenedor de postre a la izquierda y cuchillo de postre a la derecha", x:["Tenedor y cuchillo trinchero","Solo tenedor trinchero a la derecha","Cuchara de postre a la derecha"], w:"En el montaje base solo van los primeros cubiertos: tenedor y cuchillo de postre."},
+ {cat:"marcaje", p:"¿Qué cubierto se marca para el pan bao con pulled pork?", c:"Ninguno: se come con la mano", x:["Tenedor trinchero a la derecha","Cuchillo y tenedor de postre adicionales","Cuchara de postre"], w:"El pan bao se come con la mano: no se marca nada más."},
+ {cat:"marcaje", p:"Antes de marcar el postre, ¿qué hay que hacer en la mesa?", c:"Retirar saleros y plato de pan, y quitar las migas", x:["Cambiar el mantel","Retirar la copa de agua","Servir el café"], w:"Antes del postre: fuera saleros y plato de pan; se quitan las migas."},
+ {cat:"marcaje", p:"En la rutina de cada pase, ¿qué es lo primero?", c:"Desbarasar el plato anterior y sus cubiertos", x:["Pedir la «marcha» a cocina","Servir el plato siguiente","Marcar los cubiertos del plato siguiente"], w:"Orden: desbarasar → marcar → «marcha» → servir."},
+ {cat:"marcaje", p:"¿Quién pide la «marcha» de cada pase a cocina?", c:"El Maître, cuando comprueba que la mesa está marcada", x:["El Transfer, cuando ve la mesa vacía","Comedor, al terminar de desbarasar","Barra, al servir las bebidas"], w:"El Maître comprueba el marcaje y pide la «marcha»."},
+ {cat:"marcaje", p:"¿Cómo se sirve el plato en este servicio?", c:"Emplatado, por la derecha y a todos los comensales a la vez", x:["En fuente, por la izquierda, con pinzas","Por la izquierda, empezando por quien preside","Cada plato cuando sale del pase"], w:"Servicio emplatado (a la americana): por la derecha y todos a la vez."},
+ {cat:"alergenos", p:"Un cliente es alérgico a los frutos de cáscara. ¿Qué entrante no puede tomar tal como está?", c:"El canelón de melón con jamón de pato y vinagreta de pistachos", x:["El tartar de salmón con mango","El pan bao con pulled pork","Puede tomar los tres"], w:"El pistacho es un fruto de cáscara."},
+ {cat:"alergenos", p:"¿Qué alérgeno lleva seguro el tartar de salmón con mango?", c:"Pescado", x:["Crustáceos","Frutos de cáscara","Altramuces"], w:"El salmón es pescado. Soja, sésamo y sulfitos hay que preguntarlos a cocina."},
+ {cat:"alergenos", p:"Un cliente te dice que es celíaco. ¿Qué plato lleva gluten seguro?", c:"El pan bao y la tarta Tatin", x:["El arroz a banda","El tartar de salmón","Ninguno: es un menú de arroces"], w:"El pan bao es de trigo y la Tatin lleva hojaldre."},
+ {cat:"alergenos", p:"Un cliente avisa de una alergia y no sabes si el plato la lleva. ¿Qué haces?", c:"No respondo de memoria: aviso al Maître y se confirma con cocina", x:["Le digo que seguramente no lleva","Le recomiendo que aparte lo que no pueda comer","Sirvo el plato y pregunto después"], w:"Con una alergia nunca se improvisa: Maître y cocina confirman antes de servir."},
+ {cat:"vino", p:"¿Cuál es el orden de servicio de los vinos?", c:"Espumoso → blanco → rosado → tinto joven → tinto con crianza", x:["Tinto con crianza → tinto joven → rosado → blanco → espumoso","Blanco → espumoso → tinto joven → rosado → tinto con crianza","Rosado → blanco → espumoso → tinto joven → tinto con crianza"], w:"Del más ligero al de más cuerpo."},
+ {cat:"vino", p:"El rosado de hoy es un cava rosado. ¿En qué copa se sirve según la orden de trabajo?", c:"En copa de vino blanco", x:["En copa de vino tinto","En copa de agua","En vaso de tubo"], w:"El rosado se sirve en copa de blanco."},
+ {cat:"vino", p:"El Marina Alta es el blanco de la comarca. ¿De qué uva es?", c:"Moscatel de Alejandría (seco)", x:["Verdejo","Macabeo y chardonnay","Sauvignon blanc"], w:"DO Alicante · Bodegas Bocopa · moscatel de Alejandría, seco."},
+ {cat:"vino", p:"¿A qué temperatura se sirve el cava de hoy?", c:"6-8 °C", x:["10-12 °C","14-16 °C","2-3 °C"], w:"Cava Vega Medien Brut: 6-8 °C."},
+ {cat:"vino", p:"¿Cuántas copas salen, aproximadamente, de una botella de 75 cl?", c:"6 copas de 125 ml", x:["3 copas","10 copas","12 copas"], w:"1 botella de 75 cl ≈ 6 copas de 125 ml."},
+ {cat:"vino", p:"De los tres tintos de hoy, ¿cuál tiene más tiempo de barrica?", c:"Santpere tinto (roble, 8 meses)", x:["Protocolo tinto","J. Fernando Tempranillo 6 meses","Los tres son jóvenes sin madera"], w:"Santpere: 8 meses; J. Fernando: 6 meses; Protocolo: tinto sencillo y afrutado."},
+ {cat:"est", est:"MA", p:"Antes de abrir, ¿qué entrega el Maître a la brigada?", c:"El croquis de la sala con los rangos y las mesas de cada grupo", x:["La factura de cada mesa","La hoja de alérgenos","El recuento de consumiciones"], w:"Croquis y rangos entregados, reservas comprobadas y briefing a la brigada."},
+ {cat:"est", est:"MA", p:"Falta un compañero de Sumilleres. ¿Cómo se cubre el hueco?", c:"El Maître mueve a un compañero de Comedor", x:["Se queda la estación con uno menos","Lo cubre el Transfer","Lo cubre Barra"], w:"Anexo de la Ficha 22: el Maître cubre el hueco con alguien de Comedor."},
+ {cat:"est", est:"SU", p:"Un cliente cambia de vino a mitad de comida. ¿Qué haces con la copa?", c:"Copa nueva, de la reserva del aparador", x:["Sirvo en la misma copa","Enjuago la copa con agua en la mesa","Uso la copa de agua"], w:"Si se cambia de vino, copa nueva: sale de la reserva del 10 %."},
+ {cat:"est", est:"SU", p:"Antes del arroz de secreto y setas, ¿qué revisa el sumiller en la mesa?", c:"Retira la copa de blanco si ya no se usa y sirve el tinto", x:["Retira la copa de agua","Cambia todas las copas","Sirve el cava de postre"], w:"Antes del pase 3 se retira la copa de blanco si ya no se usa."},
+ {cat:"est", est:"SU", sv:true, p:"Hoy no se sirve vino. ¿De qué se encarga el sumiller?", c:"Del agua y todo lo relacionado con su servicio, y de apoyar al rango y a los camareros", x:["De nada hasta el postre","De la barra y los cafés","De pedir la «marcha» a cocina"], w:"Sin vino, el sumiller lleva el agua y apoya al rango y al resto de camareros."},
+ {cat:"est", est:"SU", sv:true, p:"El agua de tus mesas ya está servida. ¿Qué haces ahora?", c:"Apoyo al rango y al resto de camareros, sin dejar de vigilar el agua", x:["Espero en el aparador a que pidan más agua","Me voy al office","Empiezo a retirar las copas"], w:"El sumiller repone el agua y, entre tanto, apoya al rango."},
+ {cat:"est", est:"BA", p:"Preparas dos cervezas para una mesa. ¿Qué haces además de entregarlas en bandeja?", c:"Anoto la consumición para la factura del Maître", x:["Nada más: la factura es cosa del Maître","Las llevo yo a la mesa sin avisar","Las apunto al final del servicio, de memoria"], w:"Barra anota cada consumición para la factura."},
+ {cat:"est", est:"BA", p:"¿Cuándo salen los cafés y las infusiones?", c:"Después del postre, nunca a la vez", x:["A la vez que el postre","Antes del postre","Cuando el cliente pide la cuenta"], w:"Sobremesa: cafés, infusiones y licores después del postre."},
+ {cat:"est", est:"CA", p:"¿Cómo se marcan los cubiertos del plato siguiente?", c:"Sin pasar la mano por delante del cliente", x:["Todos por la derecha, de una vez","Dejándolos en el centro de la mesa","Mientras el cliente termina el plato anterior"], w:"Fichas 20 y 21: nunca se cruza el brazo por delante del cliente."},
+ {cat:"est", est:"CA", p:"Con marcaje progresivo, ¿qué cubiertos hay en la mesa al abrir?", c:"Solo los del primer pase", x:["Los de todo el menú","Ninguno","Los de entrantes y postre"], w:"El resto se marca en cada pase."},
+ {cat:"est", est:"CF", p:"¿Cuándo se hace el servicio de familia en placares?", c:"Antes de abrir el restaurante; después el grupo pasa al comedor", x:["Al terminar el servicio de clientes","A la vez que el servicio de clientes","Solo si sobra comida"], w:"Punto 9 de la orden: antes de abrir; al terminar, el grupo se incorpora a sala."},
+ {cat:"est", est:"CF", p:"En placares, ¿qué se pone en el centro de la mesa?", c:"Jarras de agua, pan, sal, aceite y vinagre", x:["Las copas de vino","Los cubiertos de postre","Nada: todo se sirve emplatado"], w:"En el centro: agua, pan, sal, aceite y vinagre; fuentes y cubiertos de servicio."},
+ {cat:"est", est:"TR", p:"El plato ya está en el pase. ¿Qué hace el Transfer?", c:"Avisa a Comedor, que lo recoge y lo sirve", x:["Lo sirve él directamente en la mesa","Espera a que el Maître vaya a buscarlo","Lo devuelve a cocina si no hay nadie"], w:"El Transfer avisa del plato en el pase; Comedor lo recoge y sirve."},
+ {cat:"est", est:"TR", p:"¿Adónde va el desbarasado?", c:"Al office, y allí se organiza el lavado", x:["Al aparador de la sala","A la barra","Se queda en el pase hasta el final"], w:"El Transfer lleva el desbarasado al office y organiza el lavado."}
+];
+var RECETA = SERVICIO.sinVino ? ["marcaje","marcaje","marcaje","alergenos","est"] : ["marcaje","marcaje","alergenos","vino","est"]; // 5 preguntas por intento
+var PASOS = SERVICIO.sinVino ? ["Orden de trabajo","Menú y marcaje","Alérgenos","5 preguntas","Resultado"] : ["Orden de trabajo","Menú y marcaje","Alérgenos","Vinos del día","5 preguntas","Resultado"];
+var P_TEST = PASOS.indexOf("5 preguntas");
+
+/* ============ ESTADO ============ */
+/* Estación en el enlace: ...?est=SU abre la app con Sumilleres ya elegido (QR o NFC de cada puesto). */
+var URLEST=(function(){ try{ var m=/[?&]est=([A-Za-z]{2})(?:&|$)/.exec(location.search||""); var k=m?m[1].toUpperCase():""; return ESTACIONES[k]?k:""; }catch(e){ return ""; } })();
+
+/* ============ AULES (paquete SCORM 1.2) ============
+   Si la app se abre dentro de Aules, la nota va sola al libro de calificaciones y no hacen falta alias ni PIN.
+   Si se abre suelta (archivo o enlace), funciona como antes, con alias, PIN y código de resultado. */
+var AULES = (function(){
+  var api=null, guardado={};
+  function busca(w){ var n=0; try{ while(w && n<12){ if(w.API) return w.API; if(w.parent===w) break; w=w.parent; n++; } }catch(e){} return null; }
+  try{ api=busca(window) || (window.opener? busca(window.opener):null); }catch(e){ api=null; }
+  if(api){ try{ if(String(api.LMSInitialize(""))!=="true") api=null; }catch(e){ api=null; } }
+  function get(k){ try{ return String(api.LMSGetValue(k)||""); }catch(e){ return ""; } }
+  function set(k,v){ try{ api.LMSSetValue(k,String(v)); }catch(e){} }
+  if(api){
+    try{ guardado=JSON.parse(get("cmi.suspend_data")||"{}")||{}; }catch(e){ guardado={}; }
+    var st=get("cmi.core.lesson_status"); if(!st || st==="not attempted"){ set("cmi.core.lesson_status","incomplete"); try{ api.LMSCommit(""); }catch(e){} }
+    var cerrar=function(){ if(!api) return; try{ api.LMSCommit(""); api.LMSFinish(""); }catch(e){} api=null; };
+    window.addEventListener("pagehide",cerrar); window.addEventListener("beforeunload",cerrar);
+  }
+  return {
+    on: !!api,
+    datos: function(){ return guardado; },
+    /* La nota que cuenta es la del primer intento; los siguientes solo pueden cambiar "superado". */
+    enviar: function(est,ac,intento,superado){
+      if(!api) return false;
+      if(guardado.ac==null){ guardado.ac=ac; guardado.est=est;
+        set("cmi.core.score.min",0); set("cmi.core.score.max",10); set("cmi.core.score.raw",ac*2); }
+      guardado.intentos=intento; if(superado) guardado.sup=true;
+      set("cmi.core.lesson_status", guardado.sup?"passed":"failed");
+      set("cmi.suspend_data", JSON.stringify(guardado));
+      try{ return String(api.LMSCommit(""))==="true"; }catch(e){ return false; }
+    }
+  };
+})();
+
+var S = { alias:"", est:"", paso:-1, intento:1, preguntas:[], resp:[], i:0, teacher:false };
+function save(){ try{ localStorage.setItem("briefing-"+SERVICIO.codigo, JSON.stringify({alias:S.alias,est:S.est,intento:S.intento,pin:S.pin})); }catch(e){} }
+function load(){ try{ return JSON.parse(localStorage.getItem("briefing-"+SERVICIO.codigo)||"null"); }catch(e){ return null; } }
+
+/* ============ UTILIDADES ============ */
+function el(tag, attrs, kids){ var n=document.createElement(tag); attrs=attrs||{};
+  for(var k in attrs){ if(k==="class") n.className=attrs[k]; else if(k==="text") n.textContent=attrs[k]; else if(k.slice(0,2)==="on") n.addEventListener(k.slice(2),attrs[k]); else n.setAttribute(k,attrs[k]); }
+  (kids||[]).forEach(function(c){ if(c==null) return; n.appendChild(typeof c==="string"?document.createTextNode(c):c); }); return n; }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function hash(s){ var h=2166136261; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return ("0000"+(h>>>0).toString(36).toUpperCase()).slice(-4); }
+function codigo(alias,est,ac,intento){ var base=[SERVICIO.codigo,alias,est,ac,intento].join("-"); return base+"-"+hash(base+"|"+SERVICIO.claveDia); }
+function leerCodigo(line){ var p=line.trim().toUpperCase().split("-"); if(p.length!==6) return null;
+  var base=p.slice(0,5).join("-"); var ac=parseInt(p[3],10), it=parseInt(p[4],10);
+  if(p[0]!==SERVICIO.codigo||!ESTACIONES[p[2]]||!(ac>=0&&ac<=5)||!(it>=1)) return null;
+  return { alias:p[1], est:p[2], ac:ac, intento:it, ok: hash(base+"|"+SERVICIO.claveDia)===p[5] }; }
+function nota(ac){ return ac*2; }
+var view=document.getElementById("view");
+function show(nodes){ view.replaceChildren.apply(view,nodes); window.scrollTo(0,0); }
+
+function chrome(){
+  document.getElementById("eyebrow").textContent="Servicio real nº "+SERVICIO.n+" · "+SERVICIO.nombre+" · "+SERVICIO.fecha;
+  var who=document.getElementById("who"), pr=document.getElementById("progress");
+  var inFlow = S.paso>=0 && !S.teacher;
+  who.hidden=!inFlow; pr.hidden=!inFlow;
+  if(inFlow){
+    who.replaceChildren(el("span",{class:"tag st",text:S.est+" · "+ESTACIONES[S.est].nombre}), el("span",{class:"tag",text:S.alias}),
+      el("button",{class:"linkbtn",type:"button",text:"Salir",onclick:function(){ S.paso=-1; render(); }}));
+    var st=document.getElementById("steps"); st.replaceChildren();
+    PASOS.forEach(function(_,i){ st.appendChild(el("li",{class: i<S.paso?"done":(i===S.paso?"now":"")})); });
+    document.getElementById("stepname").textContent="Paso "+(S.paso+1)+" de "+PASOS.length+" · "+PASOS[S.paso];
+  }
+}
+function nav(backOk, nextLabel, onNext){
+  return el("div",{class:"row"},[
+    backOk? el("button",{class:"btn ghost",type:"button",text:"Atrás",onclick:function(){ S.paso--; render(); }}):null,
+    el("button",{class:"btn",type:"button",text:nextLabel||"Siguiente",onclick:onNext||function(){ S.paso++; render(); }})
+  ]);
+}
+
+/* ============ PANTALLAS ============ */
+function vEntrada(){
+  var prev=load()||{};
+  var err=el("p",{class:"err",role:"alert"}); err.hidden=true;
+  var clave=el("input",{id:"f-clave",class:"code",autocomplete:"off",autocapitalize:"characters",placeholder:"La da el profesor en el briefing"});
+  var alias=el("input",{id:"f-alias",class:"code",autocomplete:"off",maxlength:"10",placeholder:"3 a 10 letras o números",value:prev.alias||""});
+  var pin=el("input",{id:"f-pin",class:"code",inputmode:"numeric",maxlength:"4",autocomplete:"off",placeholder:"4 cifras"});
+  var est=el("select",{id:"f-est"},[el("option",{value:"",text:"Elige tu estación de hoy"})]);
+  Object.keys(ESTACIONES).forEach(function(k){ var o=el("option",{value:k,text:k+" · "+ESTACIONES[k].nombre}); if((URLEST||prev.est)===k) o.selected=true; est.appendChild(o); });
+  function entrar(ev){ ev.preventDefault();
+    var a=alias.value.trim().toUpperCase(), c=clave.value.trim().toUpperCase(), p=pin.value.trim(), m="";
+    if(c!==SERVICIO.claveDia) m="La clave del día no es correcta. Pídesela al profesor.";
+    else if(AULES.on){ if(!est.value) m="Elige tu estación de hoy."; }
+    else if(!/^[A-Z0-9]{3,10}$/.test(a)) m="El alias lleva de 3 a 10 letras o números, sin espacios. No pongas tu nombre.";
+    else if(!/^\d{4}$/.test(p)) m="El PIN son 4 cifras.";
+    else if(prev.alias===a && prev.pin && prev.pin!==hash(a+p)) m="Ese PIN no coincide con el que usaste con este alias en este dispositivo.";
+    else if(!est.value) m="Elige tu estación de hoy.";
+    if(m){ err.textContent=m; err.hidden=false; return; }
+    if(AULES.on){ S.alias="AULES"; S.est=est.value; S.intento=(AULES.datos().intentos||0)+1; S.paso=0; render(); return; }
+    S.alias=a; S.est=est.value; S.pin=hash(a+p); S.intento=(prev.alias===a && prev.intento)||1; S.paso=0; save(); render();
+  }
+  return [ el("form",{class:"sheet",onsubmit:entrar,novalidate:""},[
+      el("div",{class:"stack"},[ el("h2",{text:"Entra antes del servicio"}),
+        el("p",{class:"muted",text:"Repasa la orden de trabajo, el menú"+(SERVICIO.sinVino?" y los alérgenos":", los alérgenos y los vinos")+". Después contestas 5 preguntas. Son unos 10 minutos."}) ]),
+      el("div",{class:"field"},[el("label",{for:"f-clave",text:"Clave del día"}),clave]),
+      AULES.on? null : el("div",{class:"field"},[el("label",{for:"f-alias",text:"Tu alias"}),alias]),
+      AULES.on? null : el("div",{class:"field"},[el("label",{for:"f-pin",text:"Tu PIN"}),pin]),
+      el("div",{class:"field"},[el("label",{for:"f-est",text:"Estación"}),est]),
+      err, el("button",{class:"btn",type:"submit",text:"Empezar el briefing"}) ]),
+    el("p",{class:"note",text: AULES.on ? "Has entrado desde Aules: tu nota se guarda sola al terminar. Cuenta la del primer intento."+(AULES.datos().ac!=null?" Ya tienes una nota guardada ("+(AULES.datos().ac*2)+"); puedes repetir para repasar.":"") : "Versión de prueba. Clave del día de demostración: "+SERVICIO.claveDia+". Alias y PIN no llevan nombres ni apellidos."}) ];
+}
+
+function vOrden(){
+  var e=ESTACIONES[S.est];
+  if(SERVICIO.sinVino && S.est==="SU") e={nombre:e.nombre,n:e.n,clave:"Hoy no se sirve vino. Te encargas del agua y de todo lo relacionado con su servicio, y apoyas al rango y al resto de camareros.",f1:"Copas de agua repasadas y colocadas; agua fría preparada; apoyo a Comedor en el montaje.",f2:"Servicio y reposición de agua en las mesas; apoyo al rango y al resto de camareros.",f3:"Retirada de copas con bandeja; repaso de cristalería; apoyo a Comedor en el desbarasado."};
+  var dl=el("dl",{class:"kv"}); [["Orden de trabajo",SERVICIO.ot],["Tipo de servicio",SERVICIO.tipo],["Comensales",SERVICIO.pax?SERVICIO.pax+" pax":"Lo confirma el Maître"],["Hora de apertura",SERVICIO.apertura||"Lo confirma el Maître"],["Vino",SERVICIO.sinVino?"Hoy no se sirve":"8 vinos del día"],["Brigada","19 · MA 1 · SU 5 · BA 2 · CA 6 · CF 4 · TR 1"]]
+    .forEach(function(r){ dl.appendChild(el("dt",{text:r[0]})); dl.appendChild(el("dd",{text:r[1]})); });
+  var rut=el("ol",{class:"rut"}); SERVICIO.rutina.forEach(function(r){ var mine = r[0]===S.est || (S.est==="CF"&&r[0]==="CA"); rut.appendChild(el("li",{class:mine?"me":""},[el("b",{text:r[1]}),el("span",{text:r[2]})])); });
+  function ph(t,x){ return el("div",{class:"phase"},[el("b",{text:t}),el("span",{text:x})]); }
+  return [
+    el("section",{class:"sheet"},[ el("h2",{text:"Datos del servicio"}), dl ]),
+    el("section",{class:"sheet"},[ el("div",{class:"stack"},[el("p",{class:"eyebrow",text:"Tu estación hoy · "+e.n+(e.n>1?" personas":" persona")}), el("h2",{text:e.nombre}), el("p",{text:e.clave})]),
+      el("div",{},[ph("Mise en place",e.f1),ph("Servicio",e.f2),ph("Postservicio",e.f3)]),
+      el("p",{class:"small muted",text:"Si terminas tus tareas de una fase, ayudas a los grupos que no han acabado antes de empezar la siguiente."}) ]),
+    el("section",{class:"sheet"},[ el("h2",{text:"Rutina de cada pase"}), el("p",{class:"small muted",text:"Se repite en todos los platos. Lo tuyo va resaltado."}), rut ]),
+    nav(false) ];
+}
+
+function vMenu(){
+  var kids=[ el("h2",{text:"Menú y marcaje"}), el("p",{class:"small",text:"Marcaje progresivo: antes de servir cada plato, Comedor coloca los cubiertos que hacen falta."}),
+    el("div",{class:"stack"},[el("h3",{text:"Montaje base"}),el("p",{class:"small",text:SERVICIO.montajeBase})]) ];
+  SERVICIO.pases.forEach(function(p){
+    var ul=el("ul"); p.platos.forEach(function(x){ ul.appendChild(el("li",{text:x})); });
+    var dl=el("dl",{class:"marc"},[el("dt",{text:"Marcaje"}),el("dd",{text:p.marcaje}),el("dt",{text:"Ojo"}),el("dd",{text:p.nota})]);
+    if(!SERVICIO.sinVino){ dl.appendChild(el("dt",{text:"Copa"})); dl.appendChild(el("dd",{text:p.copa})); }
+    kids.push(el("p",{class:"sep","aria-hidden":"true",text:"--------------o-------------"}));
+    kids.push(el("div",{class:"pase"},[el("p",{class:"n",text:p.n}),ul,dl]));
+  });
+  return [ el("section",{class:"sheet"},kids), nav(true) ];
+}
+
+function vAlergenos(){
+  var kids=[ el("h2",{text:"Alérgenos del menú"}) ];
+  if(!SERVICIO.alergenosConfirmados) kids.push(el("p",{class:"note",text:"Lista provisional, sacada del nombre de los platos. Cocina todavía no la ha confirmado: en el servicio manda la hoja de alérgenos de cocina."}));
+  SERVICIO.alergenos.forEach(function(a){
+    var ch=el("div",{class:"chips"});
+    a.seguro.forEach(function(x){ ch.appendChild(el("span",{class:"chip",text:x})); });
+    a.preguntar.forEach(function(x){ ch.appendChild(el("span",{class:"chip maybe",text:"¿"+x+"?"})); });
+    kids.push(el("div",{class:"dish"},[el("h3",{text:a.plato}),ch]));
+  });
+  kids.push(el("p",{class:"small muted",text:"Relleno: lo lleva seguro por el nombre del plato. Con interrogación: depende de la receta, se pregunta a cocina."}));
+  return [ el("section",{class:"sheet"},kids),
+    el("section",{class:"sheet"},[ el("h2",{text:"Si un cliente avisa de una alergia"}),
+      el("ol",{class:"rut"},[ el("li",{},[el("b",{text:"Escucha"}),el("span",{text:"Anota la alergia en la comanda, bien visible."})]),
+        el("li",{},[el("b",{text:"Avisa"}),el("span",{text:"Díselo al Maître. No contestes de memoria."})]),
+        el("li",{},[el("b",{text:"Confirma"}),el("span",{text:"Cocina confirma el plato o propone un cambio antes de servir."})]) ]) ]),
+    SERVICIO.sinVino ? nav(true,"Ir a las 5 preguntas",function(){ nuevoTest(); S.paso++; render(); }) : nav(true) ];
+}
+
+function vVinos(){
+  var kids=[ el("h2",{text:"Los 8 vinos de hoy"}), el("p",{class:"small",text:"Van en orden de servicio: espumoso → blanco → rosado → tinto joven → tinto con crianza. Del más ligero al de más cuerpo."}) ];
+  var box=el("div"); SERVICIO.vinos.forEach(function(v,i){ box.appendChild(el("div",{class:"wine"},[el("span",{class:"o",text:String(i+1)}),el("div",{},[el("span",{class:"k",text:v[0]}),el("h3",{text:v[1]})]),el("span",{class:"t",text:v[3]}),el("p",{class:"d",text:v[2]})])); });
+  kids.push(box);
+  kids.push(el("p",{class:"small muted",text:"Sin alcohol: Cava Vega Medien 0,0, siempre en frío. Una botella de 75 cl da unas 6 copas de 125 ml."}));
+  return [ el("section",{class:"sheet"},kids), nav(true,"Ir a las 5 preguntas",function(){ nuevoTest(); S.paso++; render(); }) ];
+}
+
+function nuevoTest(){
+  var usados={}, out=[];
+  RECETA.forEach(function(cat){
+    var pool=BANCO.filter(function(q){ return q.cat===cat && !usados[q.p] && (cat!=="est" || (q.est===S.est && !!q.sv===!!(SERVICIO.sinVino && q.est==="SU"))); });
+    if(!pool.length) pool=BANCO.filter(function(q){ return q.cat==="marcaje" && !usados[q.p]; });
+    var q=shuffle(pool)[0]; usados[q.p]=1; out.push({ q:q, opts:shuffle([q.c].concat(q.x)) });
+  });
+  S.preguntas=out; S.resp=[]; S.i=0;
+}
+
+function vTest(){
+  var it=S.preguntas[S.i], contestada=S.resp[S.i]!=null, sel=null;
+  var opts=el("div",{class:"opts"}), why=el("p",{class:"why"}); why.hidden=true;
+  var btn=el("button",{class:"btn",type:"button",text:"Comprobar"}); btn.disabled=true;
+  it.opts.forEach(function(o){ var b=el("button",{class:"opt",type:"button",text:o}); b.addEventListener("click",function(){ if(contestada) return; sel=o; Array.prototype.forEach.call(opts.children,function(c){ c.classList.toggle("sel",c===b); }); btn.disabled=false; }); opts.appendChild(b); });
+  btn.addEventListener("click",function(){
+    if(!contestada){ contestada=true; S.resp[S.i]=sel;
+      Array.prototype.forEach.call(opts.children,function(c){ c.disabled=true; c.classList.remove("sel"); if(c.textContent===it.q.c) c.classList.add("good"); else if(c.textContent===sel) c.classList.add("wrong"); });
+      why.textContent=(sel===it.q.c?"Correcto. ":"No. ")+it.q.w; why.hidden=false;
+      btn.textContent = S.i<4 ? "Siguiente pregunta" : "Ver resultado";
+    } else { if(S.i<4){ S.i++; render(); } else { S.paso++; render(); } }
+  });
+  return [ el("section",{class:"sheet q"},[ el("p",{class:"eyebrow",text:"Pregunta "+(S.i+1)+" de 5 · intento "+S.intento}), el("h2",{text:it.q.p}), opts, why, btn ]) ];
+}
+
+function vResultado(){
+  var ac=S.preguntas.reduce(function(n,it,i){ return n+(S.resp[i]===it.q.c?1:0); },0);
+  var ok=ac>=SERVICIO.aprobado, cod=codigo(S.alias,S.est,ac,S.intento);
+  var fallos=el("div",{class:"stack"}); S.preguntas.forEach(function(it,i){ if(S.resp[i]!==it.q.c) fallos.appendChild(el("p",{class:"why"},[el("b",{text:it.q.p+" "}),it.q.w])); });
+  var enAules=AULES.on, enviado=enAules && AULES.enviar(S.est,ac,S.intento,ok);
+  var kids=[ el("p",{class:"eyebrow",text:"Intento "+S.intento}),
+    el("div",{class:"row",style:"align-items:center"},[ el("span",{class:"score",text:ac+"/5"}), el("span",{class:"verdict "+(ok?"ok":"no"),text: ok?"Briefing superado":"Repasa y repite"}) ]),
+    enAules ? el("p",{class:"note",text: enviado ? "Guardado en Aules. Tu nota es la del primer intento: "+(AULES.datos().ac*2)+" sobre 10."+(ok?"":" Hacen falta "+SERVICIO.aprobado+" aciertos para superarlo: repite el test.") : "No se ha podido guardar en Aules. Enseña este código al profesor."}) : null,
+    enAules && enviado ? null : el("p",{text: ok? "Enseña este código al profesor antes de entrar en sala.":"Hacen falta "+SERVICIO.aprobado+" aciertos. Enseña el código al profesor y repite el test."}),
+    el("p",{class:"rescode",id:"rescode",text:cod}),
+    el("button",{class:"btn ghost",type:"button",text:"Copiar código",onclick:function(ev){ copiar(cod,ev.target,document.getElementById("rescode")); }}) ];
+  if(fallos.children.length){ kids.push(el("h3",{text:"Lo que has fallado"})); kids.push(fallos); }
+  kids.push(el("div",{class:"row"},[
+    el("button",{class:"btn ghost",type:"button",text:"Repasar desde el principio",onclick:function(){ S.paso=0; render(); }}),
+    el("button",{class:"btn",type:"button",text:"Repetir el test",onclick:function(){ S.intento++; if(!AULES.on) save(); nuevoTest(); S.paso=P_TEST; render(); }}) ]));
+  return [ el("section",{class:"sheet"},kids), el("p",{class:"note",text:"Ahora guarda el móvil. Durante el servicio no se usa (rúbrica, D4)."}) ];
+}
+
+function copiar(txt,btn,node){
+  function done(){ var t=btn.textContent; btn.textContent="Copiado"; setTimeout(function(){ btn.textContent=t; },1500); }
+  function sel(){ try{ var r=document.createRange(); r.selectNodeContents(node); var s=getSelection(); s.removeAllRanges(); s.addRange(r); if(node.select) node.select(); }catch(e){} btn.textContent="Selecciónalo y copia"; }
+  try{ navigator.clipboard.writeText(txt).then(done,sel); }catch(e){ sel(); }
+}
+
+/* ============ PROFESORADO ============ */
+function vProfe(){
+  if(!S.teacherOk){
+    var k=el("input",{id:"f-kprofe",class:"code",type:"password",autocomplete:"off"}), err=el("p",{class:"err",role:"alert"}); err.hidden=true;
+    return [ el("form",{class:"sheet",novalidate:"",onsubmit:function(ev){ ev.preventDefault(); if(k.value.trim().toUpperCase()===SERVICIO.claveProfe){ S.teacherOk=true; render(); } else { err.textContent="Clave incorrecta."; err.hidden=false; } }},[
+      el("h2",{text:"Profesorado"}), el("div",{class:"field"},[el("label",{for:"f-kprofe",text:"Clave del profesorado"}),k]), err,
+      el("div",{class:"row"},[el("button",{class:"btn ghost",type:"button",text:"Volver",onclick:function(){ S.teacher=false; render(); }}),el("button",{class:"btn",type:"submit",text:"Entrar"})]) ]) ];
+  }
+  var ta=el("textarea",{id:"f-codes",placeholder:"Un código por línea, tal como lo enseña cada alumno/a"});
+  var out=el("div",{class:"stack"}), tsvBox=el("textarea",{id:"f-tsv",readonly:""}); tsvBox.hidden=true;
+  function calc(){
+    var by={}, malos=0;
+    ta.value.split(/\n+/).forEach(function(l){ if(!l.trim()) return; var r=leerCodigo(l); if(!r||!r.ok){ malos++; return; }
+      var b=by[r.alias]||(by[r.alias]={alias:r.alias,est:r.est,primero:r,intentos:0,sup:false});
+      if(r.intento<b.primero.intento) b.primero=r; b.intentos=Math.max(b.intentos,r.intento); if(r.ac>=SERVICIO.aprobado) b.sup=true; });
+    var rows=Object.keys(by).sort().map(function(a){ return by[a]; });
+    var tb=el("tbody"); rows.forEach(function(b){ tb.appendChild(el("tr",{},[el("td",{text:b.alias}),el("td",{text:b.est}),el("td",{text:b.primero.ac+"/5"}),el("td",{text:String(nota(b.primero.ac))}),el("td",{text:String(b.intentos)}),el("td",{text:b.sup?"Sí":"No"})])); });
+    var tsv="Alias\tEstación\tAciertos 1.er intento\tNota (0-10)\tIntentos\tSuperado\n"+rows.map(function(b){ return [b.alias,b.est,b.primero.ac,nota(b.primero.ac),b.intentos,b.sup?"Sí":"No"].join("\t"); }).join("\n");
+    tsvBox.value=tsv;
+    out.replaceChildren(
+      el("p",{class:"small",text:rows.length+" de 19 alumnos/as con código válido"+(malos?" · "+malos+" código(s) no válidos o de otro servicio":"")+"."}),
+      el("div",{class:"tw"},[el("table",{},[el("thead",{},[el("tr",{},["Alias","Est.","1.er intento","Nota","Intentos","Superado"].map(function(h){ return el("th",{text:h}); }))]),tb])]),
+      el("button",{class:"btn",type:"button",text:"Copiar tabla para el Excel",onclick:function(ev){ tsvBox.hidden=false; copiar(tsv,ev.target,tsvBox); }}), tsvBox );
+  }
+  var act=el("dl",{class:"kv"}); [["Código","B"+("0"+SERVICIO.n).slice(-2)],["Tema","Tema 1"],["Título","Briefing del servicio nº "+SERVICIO.n+" · "+SERVICIO.nombre],["Fecha","23/10/2026"],["Tipo","Cuestionario previo"],["Instrumento","Pruebas escritas previas (taller, 10 %)"],["Trimestre","1"],["RA",SERVICIO.sinVino?"RA3":"RA3 · RA4"],["CE vinculados",SERVICIO.sinVino?"RA3 c, h, i":"RA3 c, h, i · RA4 c"],["Clave del día",SERVICIO.claveDia]]
+    .forEach(function(r){ act.appendChild(el("dt",{text:r[0]})); act.appendChild(el("dd",{text:r[1]})); });
+  return [
+    el("section",{class:"sheet"},[ el("h2",{text:"Recoger los códigos"}), el("p",{class:"small muted",text:"La nota es la del primer intento (aciertos × 2). El código lleva una comprobación: si alguien lo cambia a mano, sale como no válido."}),
+      el("div",{class:"field"},[el("label",{for:"f-codes",text:"Códigos de resultado"}),ta]), el("button",{class:"btn",type:"button",text:"Calcular",onclick:calc}), out ]),
+    el("section",{class:"sheet"},[ el("h2",{text:"Fila para la hoja ACTIVIDADES"}), act ]),
+    el("button",{class:"btn ghost",type:"button",text:"Volver a la vista del alumnado",onclick:function(){ S.teacher=false; render(); }}) ];
+}
+
+function render(){
+  chrome();
+  if(S.teacher) return show(vProfe());
+  var V = SERVICIO.sinVino ? [vEntrada,vOrden,vMenu,vAlergenos,vTest,vResultado] : [vEntrada,vOrden,vMenu,vAlergenos,vVinos,vTest,vResultado];
+  show(V[S.paso+1]());
+}
+document.getElementById("toTeacher").addEventListener("click",function(){ S.teacher=true; render(); });
+render();
+</script>
+
+<script>
+if("serviceWorker" in navigator && (location.protocol==="https:"||location.hostname==="localhost")){ window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
+</script>
+</body></html>
