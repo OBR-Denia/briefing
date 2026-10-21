@@ -122,6 +122,9 @@ th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:
 .scan .msg{font-weight:600;min-height:1.5em}
 .okmsg{color:var(--ok)} .badmsg{color:var(--bad)}
 .last{display:flex;flex-direction:column;gap:10px}
+.confirm{text-align:center;align-items:center}
+.confirm .score{font-size:5rem;color:var(--mar)}
+.confirm .row{width:100%}
 footer{font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between}
 @media (max-width:420px){ .phase{grid-template-columns:1fr} ol.rut li{grid-template-columns:1.4rem 1fr} ol.rut li span{grid-column:2} h1{font-size:1.6rem} }
 @media (prefers-reduced-motion:no-preference){ .sheet{animation:in .18s ease-out} @keyframes in{from{transform:translateY(4px)}to{transform:none}} }
@@ -140,7 +143,7 @@ footer{font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 1
   <main id="view"><section class="sheet"><h2>Esta vista previa no puede abrir la app</h2><p>Estás viendo el archivo en una vista previa, que no ejecuta la aplicación. Pasa a menudo en iPhone al abrirlo desde WhatsApp, Correo o Archivos.</p><p>Pide al profesor el enlace de la app y ábrelo en Safari o Chrome.</p></section></main>
   <footer>
     <span>OBR · 1º CFGM Servicios en Restauración · CIPFP Dénia</span>
-    <span>Prototipo v0.4.1 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
+    <span>Prototipo v0.4.3 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
   </footer>
 </div>
 
@@ -2665,19 +2668,20 @@ function nav(backOk, nextLabel, onNext){
 function vEntrada(){
   var prev=perfil();
   var err=el("p",{class:"err",role:"alert"}); err.hidden=true;
-  var clave=el("input",{id:"f-clave",class:"code",autocomplete:"off",autocapitalize:"characters",placeholder:"La da el profesor en el briefing"});
+  var bd=S.borrador||{};
+  var clave=el("input",{id:"f-clave",class:"code",autocomplete:"off",autocapitalize:"characters",placeholder:"La da el profesor en el briefing",value:bd.clave||""});
   var nl=(/^ALU(\d\d)$/.exec(prev.alias||"")||[])[1]||"";
-  var alias=el("input",{id:"f-alias",class:"code",inputmode:"numeric",autocomplete:"off",maxlength:"2",placeholder:"Del 1 al 19",value:nl?String(parseInt(nl,10)):""});
-  var pin=el("input",{id:"f-pin",class:"code",inputmode:"numeric",maxlength:"4",autocomplete:"off",placeholder:"4 cifras"});
+  var alias=el("input",{id:"f-alias",class:"code",inputmode:"numeric",autocomplete:"off",maxlength:"2",placeholder:"Del 1 al 18",value:bd.num!=null?bd.num:(nl?String(parseInt(nl,10)):"")});
+  var pin=el("input",{id:"f-pin",class:"code",inputmode:"numeric",maxlength:"4",autocomplete:"off",placeholder:"4 cifras",value:bd.pin||""});
   var est=el("select",{id:"f-est"},[el("option",{value:"",text:"Elige tu estación de hoy"})]);
-  Object.keys(ESTACIONES).forEach(function(k){ var o=el("option",{value:k,text:k+" · "+ESTACIONES[k].nombre}); if((URLEST||prev.est)===k) o.selected=true; est.appendChild(o); });
+  Object.keys(ESTACIONES).forEach(function(k){ var o=el("option",{value:k,text:k+" · "+ESTACIONES[k].nombre}); if((bd.est||URLEST||prev.est)===k) o.selected=true; est.appendChild(o); });
   function entrar(ev){ ev.preventDefault();
     var num=parseInt(alias.value.trim(),10), a="ALU"+("0"+num).slice(-2), c=clave.value.trim().toUpperCase().replace(/\s+/g,""), p=pin.value.trim(), m="";
     var meta=null; SERVICIOS.forEach(function(x){ if(x.kh===khash(c)) meta=x; });
     if(!meta) m="La clave del día no es correcta. Pídesela al profesor.";
     else if(!DATOS[meta.codigo]) m="La clave es correcta, pero el briefing de «"+meta.nombre+"» todavía no está preparado en la app.";
     else if(AULES.on){ if(!est.value) m="Elige tu estación de hoy."; }
-    else if(!(num>=1&&num<=30)) m="Escribe tu número de lista, del 1 al 19.";
+    else if(!(num>=1&&num<=18)) m="Escribe tu número de lista, del 1 al 18.";
     else if(!/^\d{4}$/.test(p)) m="El PIN son 4 cifras.";
     else if(prev.alias===a && prev.pin && prev.pin!==hash(a+p)) m="Ese PIN no coincide con el que usaste con este número en este móvil.";
     else if(!est.value) m="Elige tu estación de hoy.";
@@ -2685,7 +2689,15 @@ function vEntrada(){
     elegirServicio(meta,c);
     if(AULES.on){ S.alias="AULES"; S.est=est.value; S.intento=(AULES.datos().intentos||0)+1; S.paso=0; render(); return; }
     var e=estado();
-    S.alias=a; S.est=est.value; S.pin=hash(a+p); S.intento=(e.alias===a)? (e.hecho||0)+1 : 1; S.paso=0; save(); render();
+    S.borrador={clave:clave.value, num:alias.value, pin:p, est:est.value};
+    function seguir(){ S.borrador=null; S.alias=a; S.est=est.value; S.pin=hash(a+p); S.intento=(e.alias===a)? (e.hecho||0)+1 : 1; S.paso=0; save(); render(); }
+    function corregir(){ show(vEntrada()); setTimeout(function(){ var f=document.getElementById("f-alias"); if(f){ f.focus(); f.select(); } },0); }
+    show([ el("section",{class:"sheet confirm"},[
+      el("p",{class:"eyebrow",text:"Comprueba tu número de lista"}),
+      el("p",{class:"score",text:String(num)}),
+      el("h2",{text:"Vas a entrar como número "+num+"."}),
+      el("p",{text:"¿Es tu número de lista? Si no lo es, tu nota irá a otro compañero."}),
+      el("div",{class:"row"},[ el("button",{class:"btn ghost",type:"button",text:"No, corregir",onclick:corregir}), el("button",{class:"btn",type:"button",text:"Sí, es el mío",onclick:seguir}) ]) ]) ]);
   }
   return [ el("form",{class:"sheet",onsubmit:entrar,novalidate:""},[
       el("div",{class:"stack"},[ el("h2",{text:"Entra antes del servicio"}),
@@ -2842,7 +2854,7 @@ function vProfe(){
     var tsv="Alias\tEstación\tMejor intento (aciertos)\tNota (0-10)\tIntentos\tSuperado\n"+rows.map(function(b){ return [b.alias,b.est,b.primero.ac,nota(b.primero.ac),b.intentos,b.sup?"Sí":"No"].join("\t"); }).join("\n");
     tsvBox.value=tsv;
     out.replaceChildren(
-      el("p",{class:"small",text:rows.length+" de 19 alumnos/as con código válido"+(malos?" · "+malos+" código(s) no válidos o de otro servicio":"")+"."}),
+      el("p",{class:"small",text:rows.length+" de 18 alumnos/as con código válido"+(malos?" · "+malos+" código(s) no válidos o de otro servicio":"")+"."}),
       el("div",{class:"tw"},[el("table",{},[el("thead",{},[el("tr",{},["Alias","Est.","Mejor","Nota","Intentos","Superado"].map(function(h){ return el("th",{text:h}); }))]),tb])]),
       el("button",{class:"btn",type:"button",text:"Copiar tabla para el Excel",onclick:function(ev){ tsvBox.hidden=false; copiar(tsv,ev.target,tsvBox); }}), tsvBox );
   }
