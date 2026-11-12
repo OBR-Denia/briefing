@@ -143,7 +143,7 @@ footer{font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 1
   <main id="view"><section class="sheet"><h2>Esta vista previa no puede abrir la app</h2><p>Estás viendo el archivo en una vista previa, que no ejecuta la aplicación. Pasa a menudo en iPhone al abrirlo desde WhatsApp, Correo o Archivos.</p><p>Pide al profesor el enlace de la app y ábrelo en Safari o Chrome.</p></section></main>
   <footer>
     <span>OBR · 1º CFGM Servicios en Restauración · CIPFP Dénia</span>
-    <span>Prototipo v0.4.3 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
+    <span>Prototipo v0.5 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
   </footer>
 </div>
 
@@ -2457,6 +2457,8 @@ DATOS.S00 = {
   aprobado: 4, // aciertos mínimos de 5
   pax: null, apertura: null, mesas: null,
   alergenosConfirmados: false,
+  alumnos: 18,
+  brigada: {MA:1,SU:5,BA:2,CA:6,CF:4,TR:1},
   sinVino: true, // el 23/10 no se sirven vinos: se ocultan el paso de vinos, la copa de cada pase y las preguntas de vino
   montajeBase: "Muletón, mantel y cubremantel · plato peana · servilleta doblada en el centro del cubierto · primeros cubiertos · plato de pan a la izquierda · copa de agua · salero y pimentero. Solo se colocan los primeros cubiertos: el resto se marca en cada pase.",
   pases: [
@@ -2497,10 +2499,124 @@ DATOS.S00 = {
   ]
 };
 
+DATOS.S00.preguntas = [
+ {cat:"marcaje", p:"¿Qué se marca antes de servir el arroz a banda?", c:"Solo tenedor trinchero, a la derecha", x:["Cuchillo trinchero a la derecha y tenedor trinchero a la izquierda","Cuchara sopera a la derecha","Pala y tenedor de pescado"], w:"Arroz sin guarnición (Ficha 21): solo tenedor trinchero, a la derecha."},
+ {cat:"marcaje", p:"¿Qué se marca antes del arroz de secreto y setas?", c:"Cuchillo trinchero a la derecha y tenedor trinchero a la izquierda", x:["Solo tenedor trinchero, a la derecha","Cuchara sopera a la derecha y tenedor a la izquierda","Tenedor y cuchillo de postre"], w:"Arroz con guarnición (Ficha 21): cuchillo y tenedor trinchero."},
+ {cat:"marcaje", p:"La mesa se abre con los cubiertos de los entrantes ya puestos. ¿Cuáles son?", c:"Tenedor de postre a la izquierda y cuchillo de postre a la derecha", x:["Tenedor y cuchillo trinchero","Solo tenedor trinchero a la derecha","Cuchara de postre a la derecha"], w:"En el montaje base solo van los primeros cubiertos: tenedor y cuchillo de postre."},
+ {cat:"marcaje", p:"¿Qué cubierto se marca para el pan bao con pulled pork?", c:"Ninguno: se come con la mano", x:["Tenedor trinchero a la derecha","Cuchillo y tenedor de postre adicionales","Cuchara de postre"], w:"El pan bao se come con la mano: no se marca nada más."},
+ {cat:"marcaje", p:"Antes de marcar el postre, ¿qué hay que hacer en la mesa?", c:"Retirar saleros y plato de pan, y quitar las migas", x:["Cambiar el mantel","Retirar la copa de agua","Servir el café"], w:"Antes del postre: fuera saleros y plato de pan; se quitan las migas."},
+ {cat:"alergenos", p:"Un cliente es alérgico a los frutos de cáscara. ¿Qué entrante no puede tomar tal como está?", c:"El canelón de melón con jamón de pato y vinagreta de pistachos", x:["El tartar de salmón con mango","El pan bao con pulled pork","Puede tomar los tres"], w:"El pistacho es un fruto de cáscara."},
+ {cat:"alergenos", p:"¿Qué alérgeno lleva seguro el tartar de salmón con mango?", c:"Pescado", x:["Crustáceos","Frutos de cáscara","Altramuces"], w:"El salmón es pescado. Soja, sésamo y sulfitos hay que preguntarlos a cocina."},
+ {cat:"alergenos", p:"Un cliente te dice que es celíaco. ¿Qué plato lleva gluten seguro?", c:"El pan bao y la tarta Tatin", x:["El arroz a banda","El tartar de salmón","Ninguno: es un menú de arroces"], w:"El pan bao es de trigo y la Tatin lleva hojaldre."},
+ {cat:"vino", p:"El rosado de hoy es un cava rosado. ¿En qué copa se sirve según la orden de trabajo?", c:"En copa de vino blanco", x:["En copa de vino tinto","En copa de agua","En vaso de tubo"], w:"El rosado se sirve en copa de blanco."},
+ {cat:"vino", p:"El Marina Alta es el blanco de la comarca. ¿De qué uva es?", c:"Moscatel de Alejandría (seco)", x:["Verdejo","Macabeo y chardonnay","Sauvignon blanc"], w:"DO Alicante · Bodegas Bocopa · moscatel de Alejandría, seco."},
+ {cat:"vino", p:"¿A qué temperatura se sirve el cava de hoy?", c:"6-8 °C", x:["10-12 °C","14-16 °C","2-3 °C"], w:"Cava Vega Medien Brut: 6-8 °C."},
+ {cat:"vino", p:"De los tres tintos de hoy, ¿cuál tiene más tiempo de barrica?", c:"Santpere tinto (roble, 8 meses)", x:["Protocolo tinto","J. Fernando Tempranillo 6 meses","Los tres son jóvenes sin madera"], w:"Santpere: 8 meses; J. Fernando: 6 meses; Protocolo: tinto sencillo y afrutado."},
+ {cat:"est", est:"SU", p:"Antes del arroz de secreto y setas, ¿qué revisa el sumiller en la mesa?", c:"Retira la copa de blanco si ya no se usa y sirve el tinto", x:["Retira la copa de agua","Cambia todas las copas","Sirve el cava de postre"], w:"Antes del pase 3 se retira la copa de blanco si ya no se usa."},
+ {cat:"est", est:"SU", sv:true, p:"Hoy no se sirve vino. ¿De qué se encarga el sumiller?", c:"Del agua y todo lo relacionado con su servicio, y de apoyar al rango y a los camareros", x:["De nada hasta el postre","De la barra y los cafés","De pedir la «marcha» a cocina"], w:"Sin vino, el sumiller lleva el agua y apoya al rango y al resto de camareros."},
+ {cat:"est", est:"SU", sv:true, p:"El agua de tus mesas ya está servida. ¿Qué haces ahora?", c:"Apoyo al rango y al resto de camareros, sin dejar de vigilar el agua", x:["Espero en el aparador a que pidan más agua","Me voy al office","Empiezo a retirar las copas"], w:"El sumiller repone el agua y, entre tanto, apoya al rango."}
+];
+
+DATOS.E01 = {
+  ot: "OT-R1 · Reto «Cavall i L'Androna» · marcaje progresivo", tipo: "Emplatado (a la americana)",
+  pax: 16, apertura: "14:00 h", mesas: 4, alumnos: 17,
+  brigada: {MA:1,SU:4,BA:2,CA:7,CF:2,TR:1},
+  alergenosConfirmados: true,
+  notaAlergenos: "Hoja de alérgenos de cocina. Las tartaletas, como toda la repostería casera, pueden contener otros alérgenos: se pregunta a cocina. El café no tiene alérgenos, salvo la leche o la bebida vegetal.",
+  montajeBase: "Muletón, mantel y cubremantel · plato peana · servilleta doblada en el centro del cubierto · primeros cubiertos · plato de pan a la izquierda (cuchillo de mantequilla, opcional) · copa de agua: solo esta, las de vino y cava salen del bufé de copas · salero y pimentero. El resto de cubiertos se marca en cada pase.",
+  pases: [
+    { n:"Aperitivo", platos:["Vermut con sifón de soda","Aceitunas"],
+      marcaje:"Sin cubiertos.", nota:"Ficha 26: en mesa, por la derecha, mostrando la botella; hielo con pinzas. Vermut rojo: piel de naranja; blanco: piel de limón. Retirar los vasos antes de los snacks.", copa:"Vaso bodega corto con hielo" },
+    { n:"1. Snacks", platos:["Milhojas de boniato con jamón de pato","Vermut de gamba"],
+      marcaje:"Cucharilla de café → a la derecha del vaso de chupito.", nota:"La milhoja se come con la mano. La cucharilla se retira con el vaso. Loza: platina de piedra y vaso chupito largo.", copa:"Agua + cava" },
+    { n:"2. Entrantes", platos:["Ceviche mediterráneo de caballa","Puerro otoñal"],
+      marcaje:"Ya marcados en el montaje: tenedor de postre → izq. · cuchillo de postre → dcha. · cuchara de postre → dcha. (exterior).", nota:"Loza: bola de cristal (ceviche) y platina de piedra (puerro).", copa:"Vino blanco" },
+    { n:"3. Arroz", platos:["Meloso de puchero con pelota"],
+      marcaje:"Cuchara sopera → dcha. · tenedor trinchero → izq.", nota:"Arroz meloso (Ficha 21). Loza: platea blanca de fondo liso.", copa:"Cava rosado o tinto joven" },
+    { n:"4. Pescado", platos:["Merluza bajo cero"],
+      marcaje:"Pala de pescado → dcha. · tenedor de pescado → izq. · cuchara de salsa → dcha., exterior (opcional).", nota:"Loza: plato hondo blanco.", copa:"Vino blanco" },
+    { n:"5. Postre", platos:["Tres tartaletas de nuestra pastelería"],
+      marcaje:"Tenedor de postre → izq. · cuchillo de postre → dcha.", nota:"Tartas de pasta dura (Ficha 21). Antes: retirar saleros, plato de pan y copas; quitar migas. Loza: pizarra.", copa:"El vino que les quede, o cava si lo piden" }
+  ],
+  rutina: [
+    ["CA","Comedor","Desbarasa el plato anterior y sus cubiertos (Fichas 18 y 19)."],
+    ["CA","Comedor","Marca los cubiertos del plato siguiente, sin pasar la mano por delante del cliente (Fichas 20 y 21)."],
+    ["SU","Sumilleres","Sirven o reponen el vino del plato siguiente, con la copa del bufé."],
+    ["MA","Maître","Comprueba que la mesa está marcada y pide la «marcha» a cocina."],
+    ["TR","Transfer","Avisa del plato en el pase; Comedor lo recoge y sirve por la derecha, todos los comensales a la vez."]
+  ],
+  alergenos: [
+    { plato:"Milhojas de boniato con jamón de pato", seguro:["Huevo"], preguntar:[] },
+    { plato:"Vermut de gamba", seguro:["Crustáceos","Moluscos","Pescado","Soja","Sulfitos"], preguntar:[] },
+    { plato:"Ceviche mediterráneo de caballa", seguro:["Pescado"], preguntar:[] },
+    { plato:"Puerro otoñal", seguro:["Frutos de cáscara","Apio"], preguntar:[] },
+    { plato:"Meloso de puchero con pelota", seguro:["Gluten","Apio"], preguntar:["Huevo"] },
+    { plato:"Merluza bajo cero", seguro:["Pescado"], preguntar:[] },
+    { plato:"Tres tartaletas de nuestra pastelería", seguro:["Gluten","Huevo","Leche","Frutos de cáscara"], preguntar:[] }
+  ],
+  vinos: [
+    ["Cava","Cava Vega Medien Brut Nature ecológico","DO Cava · Requena · macabeo y chardonnay. Más de 15 meses de crianza; sin azúcar añadido, cremoso, notas de bollería.","6-8 °C"],
+    ["Blanco","Bahía de Dénia","DO Alicante · Bodegas Xaló · moscatel de Alejandría (seco). Fruta blanca, jazmín y azahar; final ligeramente amargo. El vino «de casa».","7-10 °C"],
+    ["Blanco","J. Fernando Verdejo","DO Rueda · verdejo. Piña, melocotón, cítricos y matiz herbáceo; fresco y persistente.","7-9 °C"],
+    ["Blanco","Nuviana blanco","VT Valle del Cinca (Huesca) · Codorníu · chardonnay. Cuerpo ligero pero redondo; fruta blanca madura.","8-10 °C"],
+    ["Rosado","Cava Vega Medien Rosado ecológico","DO Cava · Requena · garnacha. 12 meses de crianza; fruta roja, cremoso y fresco.","6-8 °C"],
+    ["Tinto","Terra del Mañá tinto","DO Alicante · Coop. Sta. Catalina del Mañán · monastrell. Joven y fresco, fruta roja (fresa silvestre).","14-16 °C"],
+    ["Tinto","Nuviana tinto","VT Valle del Cinca · Codorníu · tempranillo y cabernet sauvignon. Paso por roble; fruta roja y negra, más estructura.","15-16 °C"],
+    ["Tinto","Paulus Crianza","DOCa Rioja · tempranillo. 12 meses en roble; fresco, madera suave y vainilla ligera.","16-18 °C"]
+  ],
+  vinosNota: "En mesa solo está la copa de agua. El sumiller coge del bufé una borgoña (blanco, rosado o tinto) o una flauta (cava), la lleva en bandeja y la coloca a la derecha de la de agua. Si el cliente cambia de vino, copa nueva del bufé. Junto a cada mesa, un pie con su champanera (hielo pilé y agua).",
+  estaciones: {
+    SU:{ clave:"Bufé de copas y champaneras; vino de cada pase según la orden de trabajo; retirar las copas que ya no se usen.",
+         f1:"Vinos a temperatura; bufé de copas montado (18 borgoñas y 18 flautas); un pie con champanera (hielo pilé y agua) junto a cada una de las 4 mesas; carta de vinos del día.",
+         f2:"Recomendación y maridaje; copa del bufé llevada en bandeja, a la derecha de la de agua; presentación, apertura y escanciado. Cava con los snacks, blanco con entrantes y pescado, cava rosado o tinto joven con el arroz.",
+         f3:"Retirada de copas con bandeja; repaso de cristalería; recogida de champaneras y del bufé." },
+    BA:{ clave:"Aperitivo de vermut; refrescos, agua, cafés e infusiones; anotar consumiciones para la factura.",
+         f1:"Cafetera encendida y purgada; café molido; tazas calientes. Vermut, sifones y vasos bodega cortos; aceitunas escurridas en boles; naranjas y limones lavados y cortados (rodajas y pieles); hielo en cubiteras y champaneras; agua fría en botellas o jarras.",
+         f2:"Preparar en bandeja el vermut con sifón y las aceitunas para que Comedor los sirva. Bebidas que pide Comedor, en bandeja. Anotar cada consumición. Cafés e infusiones después del postre, nunca a la vez.",
+         f3:"Limpiar la cafetera y las superficies; recuento de consumiciones y de material (Ficha 13)." },
+    CA:{ clave:"Montaje base; servicio del aperitivo; marcaje antes de cada plato; servicio y desbarasado de sus mesas." },
+    CF:{ f1:"Comida de familia a las 12:30 h para 30 comensales: mesas limpias, mantel o individuales; por comensal plato, cubiertos, vaso y servilleta; en el centro agua, pan, sal, aceite y vinagre. Suben pilé y piedras de hielo, garrafas de agua y los palilleros." },
+    TR:{ f1:"Subir el pan a cocina para hornearlo y recogerlo; office y pase revisados; bandejas preparadas; tiempos de salida acordados con cocina." }
+  },
+  preguntas: [
+ {cat:"marcaje", p:"¿Qué se marca antes de los snacks?", c:"La cucharilla de café, a la derecha del vaso de chupito", x:["Tenedor y cuchillo de postre","Nada: todo se come con la mano","Cuchara sopera a la derecha"], w:"La milhoja se come con la mano; el vermut de gamba lleva cucharilla, que se retira con el vaso."},
+ {cat:"marcaje", p:"¿Qué se marca antes del meloso de puchero con pelota?", c:"Cuchara sopera a la derecha y tenedor trinchero a la izquierda", x:["Solo tenedor trinchero, a la derecha","Pala y tenedor de pescado","Cuchillo y tenedor trinchero"], w:"Arroz meloso (Ficha 21): cuchara sopera a la derecha y tenedor trinchero a la izquierda."},
+ {cat:"marcaje", p:"¿Qué se marca antes de la merluza bajo cero?", c:"Pala de pescado a la derecha y tenedor de pescado a la izquierda", x:["Cuchillo y tenedor trinchero","Cuchara sopera a la derecha","Solo tenedor de pescado, a la derecha"], w:"Pala y tenedor de pescado; la cuchara de salsa, opcional, a la derecha por fuera."},
+ {cat:"marcaje", p:"Al abrir, ¿qué cubiertos están ya en la mesa para los entrantes?", c:"Tenedor de postre (izq.), cuchillo de postre y cuchara de postre (dcha.)", x:["Tenedor y cuchillo trinchero","Solo la cucharilla de café","Ninguno: se marcan todos en el pase"], w:"Los entrantes van con los primeros cubiertos del montaje: tenedor, cuchillo y cuchara de postre."},
+ {cat:"marcaje", p:"¿Cómo se sirve el vermut del aperitivo?", c:"En mesa, por la derecha, mostrando la botella; el hielo con pinzas", x:["Ya servido desde la barra","Por la izquierda, sin enseñar la botella","Con el hielo cogido con el vaso"], w:"Ficha 26: el vermut se sirve en mesa mostrando la botella; hielo con pinzas."},
+ {cat:"marcaje", p:"Un cliente pide vermut rojo. ¿Qué cítrico lleva?", c:"Piel de naranja", x:["Piel de limón","Rodaja de pomelo","Ninguno"], w:"Vermut rojo: piel de naranja. Vermut blanco: piel de limón."},
+ {cat:"marcaje", p:"Antes de servir los snacks, ¿qué se retira de la mesa?", c:"Los vasos del vermut", x:["La copa de agua","El plato de pan","Nada"], w:"Los vasos del aperitivo se retiran antes de los snacks."},
+ {cat:"marcaje", p:"¿Qué se marca antes de las tres tartaletas?", c:"Tenedor de postre a la izquierda y cuchillo de postre a la derecha", x:["Solo la cuchara de postre","Nada: se comen con la mano","Tenedor trinchero"], w:"Tartas de pasta dura (Ficha 21): tenedor y cuchillo de postre."},
+ {cat:"marcaje", p:"Antes del postre, ¿qué hay que hacer en la mesa?", c:"Retirar saleros, plato de pan y copas, y quitar las migas", x:["Cambiar el mantel","Retirar la copa de agua y servir el café","Nada"], w:"Antes del postre: fuera saleros, plato de pan y copas que no se usan; se quitan las migas."},
+ {cat:"marcaje", p:"¿En qué loza sale el meloso de puchero?", c:"Platea blanca de fondo liso", x:["Plato hondo blanco","Bola de cristal","Pizarra"], w:"Meloso: platea blanca de fondo liso. La merluza va en plato hondo blanco."},
+ {cat:"alergenos", p:"Un cliente es alérgico al marisco. ¿Qué snack no puede tomar?", c:"El vermut de gamba", x:["La milhoja de boniato","Los dos","Ninguno"], w:"El vermut de gamba lleva crustáceos y moluscos (además de pescado, soja y sulfitos)."},
+ {cat:"alergenos", p:"Un cliente es celíaco. ¿Qué platos llevan gluten?", c:"El meloso de puchero y las tartaletas", x:["La merluza y el ceviche","Solo las tartaletas","Ninguno"], w:"Gluten: meloso de puchero con pelota y tartaletas."},
+ {cat:"alergenos", p:"Un cliente es alérgico a los frutos de cáscara. ¿Qué debe evitar?", c:"El puerro otoñal y las tartaletas", x:["La milhoja y la merluza","Solo el ceviche","Ninguno"], w:"El puerro lleva avellanas garrapiñadas; las tartaletas, frutos de cáscara."},
+ {cat:"alergenos", p:"¿Qué alérgeno del meloso de puchero está por confirmar?", c:"Huevo", x:["Gluten","Apio","Pescado"], w:"El meloso lleva gluten y apio; el huevo lo está confirmando cocina."},
+ {cat:"alergenos", p:"Un cliente es alérgico al apio. ¿Qué platos no puede tomar?", c:"El puerro otoñal y el meloso de puchero", x:["El ceviche y la merluza","Solo el vermut de gamba","Ninguno"], w:"Apio: puerro otoñal (demi-glace de verduras) y meloso de puchero."},
+ {cat:"alergenos", p:"¿Qué alérgeno lleva la milhoja de boniato?", c:"Huevo (allioli)", x:["Gluten","Leche","Ninguno"], w:"La milhoja lleva allioli de ajo asado: huevo."},
+ {cat:"vino", p:"¿Qué se bebe con los snacks?", c:"Cava", x:["Tinto con crianza","Vino blanco","Vermut"], w:"Orden de trabajo, punto 4: agua y cava con los snacks."},
+ {cat:"vino", p:"¿Qué se ofrece con el meloso de puchero?", c:"Cava rosado o tinto joven", x:["Tinto con crianza","Vino dulce","Solo agua"], w:"Con el arroz: cava rosado o tinto joven."},
+ {cat:"vino", p:"¿Cuál es hoy el blanco de la comarca?", c:"Bahía de Dénia (moscatel seco, Bodegas Xaló)", x:["J. Fernando Verdejo","Nuviana blanco","Terra del Mañá"], w:"Bahía de Dénia: DO Alicante, moscatel de Alejandría seco. El vino «de casa»."},
+ {cat:"vino", p:"¿Cuál de los tres tintos de hoy tiene crianza?", c:"Paulus Crianza (DOCa Rioja, 12 meses en roble)", x:["Terra del Mañá tinto","Nuviana tinto","Ninguno"], w:"Paulus Crianza: 12 meses en roble. Terra del Mañá es joven; Nuviana, con paso por roble."},
+ {cat:"vino", p:"¿Qué copas hay en la mesa al abrir?", c:"Solo la copa de agua", x:["Agua, blanco y tinto","Agua y flauta","Ninguna"], w:"Las copas de vino y cava salen del bufé de copas cuando el cliente elige."},
+ {cat:"vino", p:"El Terra del Mañá tinto, ¿de qué uva es?", c:"Monastrell", x:["Tempranillo","Garnacha","Cabernet sauvignon"], w:"DO Alicante · Coop. Sta. Catalina del Mañán · monastrell, joven y fresco."},
+ {cat:"vino", p:"¿A qué temperatura se sirve el cava brut nature de hoy?", c:"6-8 °C", x:["10-12 °C","14-16 °C","2-3 °C"], w:"Cava Vega Medien Brut Nature: 6-8 °C."},
+ {cat:"est", est:"SU", p:"¿Qué dejas junto a cada mesa?", c:"Un pie con su champanera, con hielo pilé y agua", x:["Una cubitera con piedras de hielo","La carta de vinos abierta","Nada: el vino se queda en el bufé"], w:"Un pie con champanera por mesa: 4 en total."},
+ {cat:"est", est:"SU", p:"El cliente elige vino blanco. ¿Cómo llevas la copa?", c:"Cojo una borgoña del bufé y la llevo en bandeja, a la derecha de la de agua", x:["Ya está en la mesa desde el montaje","Uso la copa de agua","La llevo cogida por el cáliz"], w:"Bufé de copas: borgoña para blanco, rosado y tinto; flauta para el cava."},
+ {cat:"est", est:"BA", p:"¿Qué preparas en bandeja para el aperitivo?", c:"Vermut con sifón y aceitunas, para que Comedor lo sirva", x:["Cafés e infusiones","Cava y snacks","Agua y pan"], w:"Barra prepara el vermut con sifón y las aceitunas; Comedor los sirve en mesa."},
+ {cat:"est", est:"BA", p:"¿Para qué cortas naranjas y limones?", c:"Para el vermut (rodajas y pieles) y para el agua y los refrescos", x:["Para el postre","Para decorar las mesas","Para la comida de familia"], w:"Naranja para el vermut rojo; limón para el vermut blanco, el agua y los refrescos."},
+ {cat:"est", est:"MA", p:"¿Cuántos comensales y mesas hay hoy?", c:"16 pax en 4 mesas", x:["30 pax en 6 mesas","19 pax en 4 mesas","12 pax en 3 mesas"], w:"Orden de trabajo: 16 pax, 4 mesas, apertura a las 14:00 h."},
+ {cat:"est", est:"CA", p:"¿Quién sirve el aperitivo en mesa?", c:"Comedor, con el vermut que prepara Barra", x:["Barra, desde la barra","El Maître","Los Sumilleres"], w:"Barra prepara la bandeja; Comedor sirve en mesa."},
+ {cat:"est", est:"CF", p:"¿A qué hora es la comida de familia y para cuántos?", c:"A las 12:30 h, para 30 comensales", x:["A las 14:00 h, para 16","Al acabar el servicio","A las 11:00 h, para 18"], w:"Placares: 12:30 h, 30 comensales (sala, cocina y profesorado)."},
+ {cat:"est", est:"TR", p:"¿Qué hace el Transfer con el pan?", c:"Lo sube a cocina para hornearlo y lo recoge; Comedor lo sirve", x:["Lo sirve él en las mesas","Lo deja en la barra","Nada: lo trae cocina"], w:"Orden de trabajo, punto 3.1."}
+  ]
+};
+
 /* Catálogo de servicios del curso. Las claves no están escritas: solo su huella (kh) y,
    cifrada con la clave del profesorado, la clave del día (ek), que hace falta para comprobar los códigos. */
 var PROF_HASH="7EBK7WZY";
-var SERVICIOS=[{"codigo": "S00", "n": 0, "nombre": "Restaurante «Tancat»", "fecha": "23/10/2026", "trim": 1, "kh": "V8846XWQ", "ek": "552f950b0cee15a7"}, {"codigo": "E01", "n": null, "nombre": "Servicio Claustro", "fecha": "13/11/2026", "trim": 1, "kh": "SOKRI2GT", "ek": "42229a1d1eee75db58e5"}, {"codigo": "E02", "n": null, "nombre": "Evento «Conselleria de Deportes»", "fecha": "20/11/2026", "trim": 1, "kh": "0M18WYRM", "ek": "452b8b071fee62c75be6"}, {"codigo": "S01", "n": 1, "nombre": "Menú 1", "fecha": "27/11/2026", "trim": 1, "kh": "2K8SX4M6", "ek": "4c2b951d7c9715a3"}, {"codigo": "E03", "n": null, "nombre": "Reto «Ca Seko-Claustro»", "fecha": "11/12/2026", "trim": 1, "kh": "N4KMJJTW", "ek": "422f880d06f516a5"}, {"codigo": "S02", "n": 2, "nombre": "Menú 2 (Navidad)", "fecha": "18/12/2026", "trim": 1, "kh": "AL857CUR", "ek": "4f2f9f09018b1f"}, {"codigo": "S03", "n": 3, "nombre": "Menú 3", "fecha": "22/01/2027", "trim": 2, "kh": "DU59L23N", "ek": "4c2b951d7e9715a6"}, {"codigo": "S04", "n": 4, "nombre": "Menú 4", "fecha": "05/02/2027", "trim": 2, "kh": "Z7SX5UGJ", "ek": "4c2b951d799717a1"}, {"codigo": "S05", "n": 5, "nombre": "Menú 5", "fecha": "19/02/2027", "trim": 2, "kh": "EWLDF8LN", "ek": "4c2b951d789716ad"}, {"codigo": "E04", "n": null, "nombre": "Reto «Carreter-Claustro»", "fecha": "26/02/2027", "trim": 2, "kh": "32YGEB5Q", "ek": "422f891a08ee62c65be0"}, {"codigo": "S06", "n": 6, "nombre": "Menú 6", "fecha": "12/03/2027", "trim": 2, "kh": "5ZOV2ESP", "ek": "4c2b951d7b9716a6"}, {"codigo": "S07", "n": 7, "nombre": "Menú 7", "fecha": "16/04/2027", "trim": 3, "kh": "SSFMCK2K", "ek": "4c2b951d7a9716a2"}, {"codigo": "S08", "n": 8, "nombre": "Menú 8", "fecha": "30/04/2027", "trim": 3, "kh": "IKSL443F", "ek": "4c2b951d759714a4"}];
+var SERVICIOS=[{"codigo": "S00", "n": 0, "nombre": "Restaurante «Tancat»", "fecha": "23/10/2026", "trim": 1, "kh": "V8846XWQ", "ek": "552f950b0cee15a7"}, {"codigo": "E01", "n": null, "nombre": "Reto «Cavall i L'Androna» (Claustro)", "fecha": "13/11/2026", "trim": 1, "kh": "SOKRI2GT", "ek": "42229a1d1eee75db58e5"}, {"codigo": "E02", "n": null, "nombre": "Evento «Conselleria de Deportes»", "fecha": "20/11/2026", "trim": 1, "kh": "0M18WYRM", "ek": "452b8b071fee62c75be6"}, {"codigo": "S01", "n": 1, "nombre": "Menú 1", "fecha": "27/11/2026", "trim": 1, "kh": "2K8SX4M6", "ek": "4c2b951d7c9715a3"}, {"codigo": "E03", "n": null, "nombre": "Reto «Ca Seko-Claustro»", "fecha": "11/12/2026", "trim": 1, "kh": "N4KMJJTW", "ek": "422f880d06f516a5"}, {"codigo": "S02", "n": 2, "nombre": "Menú 2 (Navidad)", "fecha": "18/12/2026", "trim": 1, "kh": "AL857CUR", "ek": "4f2f9f09018b1f"}, {"codigo": "S03", "n": 3, "nombre": "Menú 3", "fecha": "22/01/2027", "trim": 2, "kh": "DU59L23N", "ek": "4c2b951d7e9715a6"}, {"codigo": "S04", "n": 4, "nombre": "Menú 4", "fecha": "05/02/2027", "trim": 2, "kh": "Z7SX5UGJ", "ek": "4c2b951d799717a1"}, {"codigo": "S05", "n": 5, "nombre": "Menú 5", "fecha": "19/02/2027", "trim": 2, "kh": "EWLDF8LN", "ek": "4c2b951d789716ad"}, {"codigo": "E04", "n": null, "nombre": "Reto «Carreter-Claustro»", "fecha": "26/02/2027", "trim": 2, "kh": "32YGEB5Q", "ek": "422f891a08ee62c65be0"}, {"codigo": "S06", "n": 6, "nombre": "Menú 6", "fecha": "12/03/2027", "trim": 2, "kh": "5ZOV2ESP", "ek": "4c2b951d7b9716a6"}, {"codigo": "S07", "n": 7, "nombre": "Menú 7", "fecha": "16/04/2027", "trim": 3, "kh": "SSFMCK2K", "ek": "4c2b951d7a9716a2"}, {"codigo": "S08", "n": 8, "nombre": "Menú 8", "fecha": "30/04/2027", "trim": 3, "kh": "IKSL443F", "ek": "4c2b951d759714a4"}];
 var SERVICIO = null;
 function elegirServicio(meta, clave){
   SERVICIO = Object.assign({ aprobado:4 }, DATOS[meta.codigo]||{}, meta);
@@ -2537,30 +2653,15 @@ var ESTACIONES = {
 
 /* Banco de preguntas. c = respuesta correcta; x = distractores; cat = bloque; est = solo para esa estación */
 var BANCO = [
- {cat:"marcaje", p:"¿Qué se marca antes de servir el arroz a banda?", c:"Solo tenedor trinchero, a la derecha", x:["Cuchillo trinchero a la derecha y tenedor trinchero a la izquierda","Cuchara sopera a la derecha","Pala y tenedor de pescado"], w:"Arroz sin guarnición (Ficha 21): solo tenedor trinchero, a la derecha."},
- {cat:"marcaje", p:"¿Qué se marca antes del arroz de secreto y setas?", c:"Cuchillo trinchero a la derecha y tenedor trinchero a la izquierda", x:["Solo tenedor trinchero, a la derecha","Cuchara sopera a la derecha y tenedor a la izquierda","Tenedor y cuchillo de postre"], w:"Arroz con guarnición (Ficha 21): cuchillo y tenedor trinchero."},
- {cat:"marcaje", p:"La mesa se abre con los cubiertos de los entrantes ya puestos. ¿Cuáles son?", c:"Tenedor de postre a la izquierda y cuchillo de postre a la derecha", x:["Tenedor y cuchillo trinchero","Solo tenedor trinchero a la derecha","Cuchara de postre a la derecha"], w:"En el montaje base solo van los primeros cubiertos: tenedor y cuchillo de postre."},
- {cat:"marcaje", p:"¿Qué cubierto se marca para el pan bao con pulled pork?", c:"Ninguno: se come con la mano", x:["Tenedor trinchero a la derecha","Cuchillo y tenedor de postre adicionales","Cuchara de postre"], w:"El pan bao se come con la mano: no se marca nada más."},
- {cat:"marcaje", p:"Antes de marcar el postre, ¿qué hay que hacer en la mesa?", c:"Retirar saleros y plato de pan, y quitar las migas", x:["Cambiar el mantel","Retirar la copa de agua","Servir el café"], w:"Antes del postre: fuera saleros y plato de pan; se quitan las migas."},
  {cat:"marcaje", p:"En la rutina de cada pase, ¿qué es lo primero?", c:"Desbarasar el plato anterior y sus cubiertos", x:["Pedir la «marcha» a cocina","Servir el plato siguiente","Marcar los cubiertos del plato siguiente"], w:"Orden: desbarasar → marcar → «marcha» → servir."},
  {cat:"marcaje", p:"¿Quién pide la «marcha» de cada pase a cocina?", c:"El Maître, cuando comprueba que la mesa está marcada", x:["El Transfer, cuando ve la mesa vacía","Comedor, al terminar de desbarasar","Barra, al servir las bebidas"], w:"El Maître comprueba el marcaje y pide la «marcha»."},
  {cat:"marcaje", p:"¿Cómo se sirve el plato en este servicio?", c:"Emplatado, por la derecha y a todos los comensales a la vez", x:["En fuente, por la izquierda, con pinzas","Por la izquierda, empezando por quien preside","Cada plato cuando sale del pase"], w:"Servicio emplatado (a la americana): por la derecha y todos a la vez."},
- {cat:"alergenos", p:"Un cliente es alérgico a los frutos de cáscara. ¿Qué entrante no puede tomar tal como está?", c:"El canelón de melón con jamón de pato y vinagreta de pistachos", x:["El tartar de salmón con mango","El pan bao con pulled pork","Puede tomar los tres"], w:"El pistacho es un fruto de cáscara."},
- {cat:"alergenos", p:"¿Qué alérgeno lleva seguro el tartar de salmón con mango?", c:"Pescado", x:["Crustáceos","Frutos de cáscara","Altramuces"], w:"El salmón es pescado. Soja, sésamo y sulfitos hay que preguntarlos a cocina."},
- {cat:"alergenos", p:"Un cliente te dice que es celíaco. ¿Qué plato lleva gluten seguro?", c:"El pan bao y la tarta Tatin", x:["El arroz a banda","El tartar de salmón","Ninguno: es un menú de arroces"], w:"El pan bao es de trigo y la Tatin lleva hojaldre."},
  {cat:"alergenos", p:"Un cliente avisa de una alergia y no sabes si el plato la lleva. ¿Qué haces?", c:"No respondo de memoria: aviso al Maître y se confirma con cocina", x:["Le digo que seguramente no lleva","Le recomiendo que aparte lo que no pueda comer","Sirvo el plato y pregunto después"], w:"Con una alergia nunca se improvisa: Maître y cocina confirman antes de servir."},
  {cat:"vino", p:"¿Cuál es el orden de servicio de los vinos?", c:"Espumoso → blanco → rosado → tinto joven → tinto con crianza", x:["Tinto con crianza → tinto joven → rosado → blanco → espumoso","Blanco → espumoso → tinto joven → rosado → tinto con crianza","Rosado → blanco → espumoso → tinto joven → tinto con crianza"], w:"Del más ligero al de más cuerpo."},
- {cat:"vino", p:"El rosado de hoy es un cava rosado. ¿En qué copa se sirve según la orden de trabajo?", c:"En copa de vino blanco", x:["En copa de vino tinto","En copa de agua","En vaso de tubo"], w:"El rosado se sirve en copa de blanco."},
- {cat:"vino", p:"El Marina Alta es el blanco de la comarca. ¿De qué uva es?", c:"Moscatel de Alejandría (seco)", x:["Verdejo","Macabeo y chardonnay","Sauvignon blanc"], w:"DO Alicante · Bodegas Bocopa · moscatel de Alejandría, seco."},
- {cat:"vino", p:"¿A qué temperatura se sirve el cava de hoy?", c:"6-8 °C", x:["10-12 °C","14-16 °C","2-3 °C"], w:"Cava Vega Medien Brut: 6-8 °C."},
  {cat:"vino", p:"¿Cuántas copas salen, aproximadamente, de una botella de 75 cl?", c:"6 copas de 125 ml", x:["3 copas","10 copas","12 copas"], w:"1 botella de 75 cl ≈ 6 copas de 125 ml."},
- {cat:"vino", p:"De los tres tintos de hoy, ¿cuál tiene más tiempo de barrica?", c:"Santpere tinto (roble, 8 meses)", x:["Protocolo tinto","J. Fernando Tempranillo 6 meses","Los tres son jóvenes sin madera"], w:"Santpere: 8 meses; J. Fernando: 6 meses; Protocolo: tinto sencillo y afrutado."},
  {cat:"est", est:"MA", p:"Antes de abrir, ¿qué entrega el Maître a la brigada?", c:"El croquis de la sala con los rangos y las mesas de cada grupo", x:["La factura de cada mesa","La hoja de alérgenos","El recuento de consumiciones"], w:"Croquis y rangos entregados, reservas comprobadas y briefing a la brigada."},
  {cat:"est", est:"MA", p:"Falta un compañero de Sumilleres. ¿Cómo se cubre el hueco?", c:"El Maître mueve a un compañero de Comedor", x:["Se queda la estación con uno menos","Lo cubre el Transfer","Lo cubre Barra"], w:"Anexo de la Ficha 22: el Maître cubre el hueco con alguien de Comedor."},
- {cat:"est", est:"SU", p:"Un cliente cambia de vino a mitad de comida. ¿Qué haces con la copa?", c:"Copa nueva, de la reserva del aparador", x:["Sirvo en la misma copa","Enjuago la copa con agua en la mesa","Uso la copa de agua"], w:"Si se cambia de vino, copa nueva: sale de la reserva del 10 %."},
- {cat:"est", est:"SU", p:"Antes del arroz de secreto y setas, ¿qué revisa el sumiller en la mesa?", c:"Retira la copa de blanco si ya no se usa y sirve el tinto", x:["Retira la copa de agua","Cambia todas las copas","Sirve el cava de postre"], w:"Antes del pase 3 se retira la copa de blanco si ya no se usa."},
- {cat:"est", est:"SU", sv:true, p:"Hoy no se sirve vino. ¿De qué se encarga el sumiller?", c:"Del agua y todo lo relacionado con su servicio, y de apoyar al rango y a los camareros", x:["De nada hasta el postre","De la barra y los cafés","De pedir la «marcha» a cocina"], w:"Sin vino, el sumiller lleva el agua y apoya al rango y al resto de camareros."},
- {cat:"est", est:"SU", sv:true, p:"El agua de tus mesas ya está servida. ¿Qué haces ahora?", c:"Apoyo al rango y al resto de camareros, sin dejar de vigilar el agua", x:["Espero en el aparador a que pidan más agua","Me voy al office","Empiezo a retirar las copas"], w:"El sumiller repone el agua y, entre tanto, apoya al rango."},
+ {cat:"est", est:"SU", p:"Un cliente cambia de vino a mitad de comida. ¿Qué haces con la copa?", c:"Copa nueva, del bufé de copas o de la reserva", x:["Sirvo en la misma copa","Enjuago la copa con agua en la mesa","Uso la copa de agua"], w:"Si se cambia de vino, copa nueva: sale de la reserva del 10 %."},
  {cat:"est", est:"BA", p:"Preparas dos cervezas para una mesa. ¿Qué haces además de entregarlas en bandeja?", c:"Anoto la consumición para la factura del Maître", x:["Nada más: la factura es cosa del Maître","Las llevo yo a la mesa sin avisar","Las apunto al final del servicio, de memoria"], w:"Barra anota cada consumición para la factura."},
  {cat:"est", est:"BA", p:"¿Cuándo salen los cafés y las infusiones?", c:"Después del postre, nunca a la vez", x:["A la vez que el postre","Antes del postre","Cuando el cliente pide la cuenta"], w:"Sobremesa: cafés, infusiones y licores después del postre."},
  {cat:"est", est:"CA", p:"¿Cómo se marcan los cubiertos del plato siguiente?", c:"Sin pasar la mano por delante del cliente", x:["Todos por la derecha, de una vez","Dejándolos en el centro de la mesa","Mientras el cliente termina el plato anterior"], w:"Fichas 20 y 21: nunca se cruza el brazo por delante del cliente."},
@@ -2569,6 +2670,7 @@ var BANCO = [
  {cat:"est", est:"CF", p:"En placares, ¿qué se pone en el centro de la mesa?", c:"Jarras de agua, pan, sal, aceite y vinagre", x:["Las copas de vino","Los cubiertos de postre","Nada: todo se sirve emplatado"], w:"En el centro: agua, pan, sal, aceite y vinagre; fuentes y cubiertos de servicio."},
  {cat:"est", est:"TR", p:"El plato ya está en el pase. ¿Qué hace el Transfer?", c:"Avisa a Comedor, que lo recoge y lo sirve", x:["Lo sirve él directamente en la mesa","Espera a que el Maître vaya a buscarlo","Lo devuelve a cocina si no hay nadie"], w:"El Transfer avisa del plato en el pase; Comedor lo recoge y sirve."},
  {cat:"est", est:"TR", p:"¿Adónde va el desbarasado?", c:"Al office, y allí se organiza el lavado", x:["Al aparador de la sala","A la barra","Se queda en el pase hasta el final"], w:"El Transfer lleva el desbarasado al office y organiza el lavado."}
+
 ];
 var RECETA, PASOS, P_TEST;
 function configurar(){
@@ -2719,10 +2821,12 @@ function vUltimos(){
   return box;
 }
 
+function brigadaTxt(){ var b=SERVICIO.brigada; if(!b) return "—"; var t=0, ks=Object.keys(b); ks.forEach(function(k){ t+=b[k]; }); return t+" · "+ks.map(function(k){ return k+" "+b[k]; }).join(" · "); }
 function vOrden(){
-  var e=ESTACIONES[S.est];
+  var e=Object.assign({}, ESTACIONES[S.est], (SERVICIO.estaciones||{})[S.est]||{});
+  if(SERVICIO.brigada && SERVICIO.brigada[S.est]!=null) e.n=SERVICIO.brigada[S.est];
   if(SERVICIO.sinVino && S.est==="SU") e={nombre:e.nombre,n:e.n,clave:"Hoy no se sirve vino. Te encargas del agua y de todo lo relacionado con su servicio, y apoyas al rango y al resto de camareros.",f1:"Copas de agua repasadas y colocadas; agua fría preparada; apoyo a Comedor en el montaje.",f2:"Servicio y reposición de agua en las mesas; apoyo al rango y al resto de camareros.",f3:"Retirada de copas con bandeja; repaso de cristalería; apoyo a Comedor en el desbarasado."};
-  var dl=el("dl",{class:"kv"}); [["Orden de trabajo",SERVICIO.ot],["Tipo de servicio",SERVICIO.tipo],["Comensales",SERVICIO.pax?SERVICIO.pax+" pax":"Lo confirma el Maître"],["Hora de apertura",SERVICIO.apertura||"Lo confirma el Maître"],["Vino",SERVICIO.sinVino?"Hoy no se sirve":"8 vinos del día"],["Brigada","19 · MA 1 · SU 5 · BA 2 · CA 6 · CF 4 · TR 1"]]
+  var dl=el("dl",{class:"kv"}); [["Orden de trabajo",SERVICIO.ot],["Tipo de servicio",SERVICIO.tipo],["Comensales",SERVICIO.pax?SERVICIO.pax+" pax":"Lo confirma el Maître"],["Hora de apertura",SERVICIO.apertura||"Lo confirma el Maître"],["Mesas",SERVICIO.mesas?String(SERVICIO.mesas):"Lo confirma el Maître"],["Vino",SERVICIO.sinVino?"Hoy no se sirve":"8 vinos del día"],["Brigada",brigadaTxt()]]
     .forEach(function(r){ dl.appendChild(el("dt",{text:r[0]})); dl.appendChild(el("dd",{text:r[1]})); });
   var rut=el("ol",{class:"rut"}); SERVICIO.rutina.forEach(function(r){ var mine = r[0]===S.est || (S.est==="CF"&&r[0]==="CA"); rut.appendChild(el("li",{class:mine?"me":""},[el("b",{text:r[1]}),el("span",{text:r[2]})])); });
   function ph(t,x){ return el("div",{class:"phase"},[el("b",{text:t}),el("span",{text:x})]); }
@@ -2757,7 +2861,8 @@ function vAlergenos(){
     a.preguntar.forEach(function(x){ ch.appendChild(el("span",{class:"chip maybe",text:"¿"+x+"?"})); });
     kids.push(el("div",{class:"dish"},[el("h3",{text:a.plato}),ch]));
   });
-  kids.push(el("p",{class:"small muted",text:"Relleno: lo lleva seguro por el nombre del plato. Con interrogación: depende de la receta, se pregunta a cocina."}));
+  kids.push(el("p",{class:"small muted",text: SERVICIO.alergenosConfirmados ? "Relleno: lo lleva (hoja de alérgenos de cocina). Con interrogación: cocina todavía lo está confirmando; se pregunta antes de servir." : "Relleno: lo lleva seguro por el nombre del plato. Con interrogación: depende de la receta, se pregunta a cocina."}));
+  if(SERVICIO.notaAlergenos) kids.push(el("p",{class:"note",text:SERVICIO.notaAlergenos}));
   return [ el("section",{class:"sheet"},kids),
     el("section",{class:"sheet"},[ el("h2",{text:"Si un cliente avisa de una alergia"}),
       el("ol",{class:"rut"},[ el("li",{},[el("b",{text:"Escucha"}),el("span",{text:"Anota la alergia en la comanda, bien visible."})]),
@@ -2770,6 +2875,9 @@ function vVinos(){
   var kids=[ el("h2",{text:"Los 8 vinos de hoy"}), el("p",{class:"small",text:"Van en orden de servicio: espumoso → blanco → rosado → tinto joven → tinto con crianza. Del más ligero al de más cuerpo."}) ];
   var box=el("div"); SERVICIO.vinos.forEach(function(v,i){ box.appendChild(el("div",{class:"wine"},[el("span",{class:"o",text:String(i+1)}),el("div",{},[el("span",{class:"k",text:v[0]}),el("h3",{text:v[1]})]),el("span",{class:"t",text:v[3]}),el("p",{class:"d",text:v[2]})])); });
   kids.push(box);
+  var mar=el("dl",{class:"marc"}); SERVICIO.pases.forEach(function(p){ mar.appendChild(el("dt",{text:p.n})); mar.appendChild(el("dd",{text:p.copa})); });
+  kids.push(el("h3",{text:"Qué se bebe en cada pase"})); kids.push(mar);
+  if(SERVICIO.vinosNota) kids.push(el("p",{class:"note",text:SERVICIO.vinosNota}));
   kids.push(el("p",{class:"small muted",text:"Sin alcohol: Cava Vega Medien 0,0, siempre en frío. Una botella de 75 cl da unas 6 copas de 125 ml."}));
   return [ el("section",{class:"sheet"},kids), nav(true,"Ir a las 5 preguntas",function(){ nuevoTest(); S.paso++; render(); }) ];
 }
@@ -2777,8 +2885,9 @@ function vVinos(){
 function nuevoTest(){
   var usados={}, out=[];
   RECETA.forEach(function(cat){
-    var pool=BANCO.filter(function(q){ return q.cat===cat && !usados[q.p] && (cat!=="est" || (q.est===S.est && !!q.sv===!!(SERVICIO.sinVino && q.est==="SU"))); });
-    if(!pool.length) pool=BANCO.filter(function(q){ return q.cat==="marcaje" && !usados[q.p]; });
+    var B=BANCO.concat(SERVICIO.preguntas||[]);
+    var pool=B.filter(function(q){ return q.cat===cat && !usados[q.p] && (cat!=="est" || (q.est===S.est && !!q.sv===!!(SERVICIO.sinVino && q.est==="SU"))); });
+    if(!pool.length) pool=B.filter(function(q){ return q.cat==="marcaje" && !usados[q.p]; });
     var q=shuffle(pool)[0]; usados[q.p]=1; out.push({ q:q, opts:shuffle([q.c].concat(q.x)) });
   });
   S.preguntas=out; S.resp=[]; S.i=0;
@@ -2854,7 +2963,7 @@ function vProfe(){
     var tsv="Alias\tEstación\tMejor intento (aciertos)\tNota (0-10)\tIntentos\tSuperado\n"+rows.map(function(b){ return [b.alias,b.est,b.primero.ac,nota(b.primero.ac),b.intentos,b.sup?"Sí":"No"].join("\t"); }).join("\n");
     tsvBox.value=tsv;
     out.replaceChildren(
-      el("p",{class:"small",text:rows.length+" de 18 alumnos/as con código válido"+(malos?" · "+malos+" código(s) no válidos o de otro servicio":"")+"."}),
+      el("p",{class:"small",text:rows.length+" de "+(SERVICIO.alumnos||18)+" alumnos/as con código válido"+(malos?" · "+malos+" código(s) no válidos o de otro servicio":"")+"."}),
       el("div",{class:"tw"},[el("table",{},[el("thead",{},[el("tr",{},["Alias","Est.","Mejor","Nota","Intentos","Superado"].map(function(h){ return el("th",{text:h}); }))]),tb])]),
       el("button",{class:"btn",type:"button",text:"Copiar tabla para el Excel",onclick:function(ev){ tsvBox.hidden=false; copiar(tsv,ev.target,tsvBox); }}), tsvBox );
   }
