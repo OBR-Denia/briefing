@@ -143,7 +143,7 @@ footer{font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 1
   <main id="view"><section class="sheet"><h2>Esta vista previa no puede abrir la app</h2><p>Estás viendo el archivo en una vista previa, que no ejecuta la aplicación. Pasa a menudo en iPhone al abrirlo desde WhatsApp, Correo o Archivos.</p><p>Pide al profesor el enlace de la app y ábrelo en Safari o Chrome.</p></section></main>
   <footer>
     <span>OBR · 1º CFGM Servicios en Restauración · CIPFP Dénia</span>
-    <span>Prototipo v0.5 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
+    <span>Prototipo v0.5.1 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
   </footer>
 </div>
 
@@ -2949,9 +2949,17 @@ function vProfe(){
   var meta=SERVICIOS.filter(function(m){ return m.codigo===S.profServ; })[0];
   elegirServicio(meta, descifrar(meta.ek, S.teacherOk));
   var selS=el("select",{id:"f-serv"}); SERVICIOS.forEach(function(m){ var o=el("option",{value:m.codigo,text:m.fecha+" · "+m.nombre+(DATOS[m.codigo]?"":" (sin preparar)")}); if(m.codigo===S.profServ) o.selected=true; selS.appendChild(o); });
-  selS.addEventListener("change",function(){ S.profServ=selS.value; S.profCodes=""; render(); });
+  selS.addEventListener("change",function(){ S.profServ=selS.value; S.profCodes=null; render(); });
+  if(S.profCodes==null) S.profCodes=leerLista();
   var ta=el("textarea",{id:"f-codes",placeholder:"Un código por línea, o usa «Escanear QR»"}); ta.value=S.profCodes||"";
-  ta.addEventListener("input",function(){ S.profCodes=ta.value; });
+  var estadoLista=el("p",{class:"small muted"});
+  function contarLista(){ var n=ta.value.split(/\n+/).filter(function(x){ return x.trim(); }).length; estadoLista.textContent = n ? n+" código(s) guardados en este móvil para este servicio. Siguen aquí aunque cierres la app." : "Lista vacía. Los códigos que escanees se guardarán en este móvil."; }
+  contarLista();
+  ta.addEventListener("input",function(){ S.profCodes=ta.value; guardarLista(ta.value); contarLista(); });
+  var vaciar=el("button",{class:"btn ghost",type:"button",text:"Vaciar lista"}), armado=null;
+  vaciar.addEventListener("click",function(){
+    if(!armado){ vaciar.textContent="Pulsa otra vez para vaciar"; armado=setTimeout(function(){ armado=null; vaciar.textContent="Vaciar lista"; },4000); return; }
+    clearTimeout(armado); armado=null; ta.value=""; S.profCodes=""; guardarLista(""); vaciar.textContent="Vaciar lista"; contarLista(); calc(); });
   var out=el("div",{class:"stack"}), tsvBox=el("textarea",{id:"f-tsv",readonly:""}); tsvBox.hidden=true;
   function calc(){
     var by={}, malos=0;
@@ -2975,19 +2983,23 @@ function vProfe(){
       el("div",{class:"field"},[el("label",{for:"f-serv",text:"Servicio"}),selS]),
       el("p",{class:"small muted",text:"La nota es la del mejor intento (aciertos × 2). Cada código lleva una comprobación: si alguien lo cambia a mano, sale como no válido."}),
       el("button",{class:"btn",type:"button",text:"Escanear QR con la cámara",onclick:function(){ escanear(ta,calc); }}),
-      el("div",{class:"field"},[el("label",{for:"f-codes",text:"Códigos de resultado"}),ta]), el("button",{class:"btn ghost",type:"button",text:"Calcular",onclick:calc}), out ]),
+      el("div",{class:"field"},[el("label",{for:"f-codes",text:"Códigos de resultado"}),ta]), estadoLista, el("div",{class:"row"},[ el("button",{class:"btn ghost",type:"button",text:"Calcular",onclick:calc}), vaciar ]), out ]),
     el("section",{class:"sheet"},[ el("h2",{text:"Fila para la hoja ACTIVIDADES"}), act ]),
     el("button",{class:"btn ghost",type:"button",text:"Volver a la vista del alumnado",onclick:function(){ S.teacher=false; S.paso=-1; SERVICIO=null; render(); }}) ];
 }
 
 /* ============ ESCÁNER DE QR (vista del profesorado) ============ */
+/* Lista de códigos del profesorado: se guarda en este móvil, una por servicio, hasta que se vacía. */
+function listaKey(){ return "briefing-prof-"+S.profServ; }
+function leerLista(){ try{ return localStorage.getItem(listaKey())||""; }catch(e){ return ""; } }
+function guardarLista(v){ try{ if(v && v.trim()) localStorage.setItem(listaKey(),v); else localStorage.removeItem(listaKey()); }catch(e){} }
 function cargarJsQR(){ return new Promise(function(ok,ko){ if(window.jsQR) return ok(); var sc=document.createElement("script"); sc.src="jsQR.js"; sc.onload=function(){ ok(); }; sc.onerror=ko; document.head.appendChild(sc); }); }
 function escanear(ta,calc){
   var video=el("video",{playsinline:"",muted:""}), msg=el("p",{class:"msg",text:"Apunta al QR del móvil del alumno."}), cnt=el("p",{class:"small muted"});
   var cerrar=el("button",{class:"btn",type:"button",text:"Terminar"}), capa=el("div",{class:"scan"},[video, el("div",{class:"bar"},[msg,cnt,cerrar])]);
   document.body.appendChild(capa);
   var stream=null, vivo=true, det=null, cv=document.createElement("canvas"), cx=cv.getContext("2d",{willReadFrequently:true}), ultimo="", t0=0;
-  function fin(){ vivo=false; if(stream) stream.getTracks().forEach(function(t){ t.stop(); }); capa.remove(); calc(); }
+  function fin(){ vivo=false; ta.dispatchEvent(new Event("input")); if(stream) stream.getTracks().forEach(function(t){ t.stop(); }); capa.remove(); calc(); }
   cerrar.addEventListener("click",fin);
   function contar(){ cnt.textContent=ta.value.split(/\n+/).filter(function(x){ return x.trim(); }).length+" código(s) recogidos"; }
   function nuevo(txt){
@@ -2997,7 +3009,7 @@ function escanear(ta,calc){
     if(!r.ok){ msg.className="msg badmsg"; msg.textContent="Código no válido."; return; }
     var lineas=ta.value.split(/\n+/).map(function(x){ return x.trim().toUpperCase(); });
     if(lineas.indexOf(txt)>=0){ msg.className="msg"; msg.textContent=r.alias+" ya estaba recogido."; return; }
-    ta.value=(ta.value.trim()?ta.value.trim()+"\n":"")+txt; S.profCodes=ta.value;
+    ta.value=(ta.value.trim()?ta.value.trim()+"\n":"")+txt; S.profCodes=ta.value; guardarLista(ta.value);
     msg.className="msg okmsg"; msg.textContent="✓ "+r.alias+" · "+r.est+" · "+r.ac+"/5"; contar();
     try{ navigator.vibrate&&navigator.vibrate(80); }catch(e){}
   }
