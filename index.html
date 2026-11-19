@@ -143,7 +143,7 @@ footer{font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 1
   <main id="view"><section class="sheet"><h2>Esta vista previa no puede abrir la app</h2><p>Estás viendo el archivo en una vista previa, que no ejecuta la aplicación. Pasa a menudo en iPhone al abrirlo desde WhatsApp, Correo o Archivos.</p><p>Pide al profesor el enlace de la app y ábrelo en Safari o Chrome.</p></section></main>
   <footer>
     <span>OBR · 1º CFGM Servicios en Restauración · CIPFP Dénia</span>
-    <span>Prototipo v0.5.1 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
+    <span>Prototipo v0.5.2 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
   </footer>
 </div>
 
@@ -2482,10 +2482,10 @@ DATOS.S00 = {
   alergenos: [
     { plato:"Canelón de melón con jamón de pato y vinagreta de pistachos", seguro:["Frutos de cáscara"], preguntar:["Sulfitos","Mostaza"] },
     { plato:"Tartar de salmón con mango y vinagreta de jengibre", seguro:["Pescado"], preguntar:["Soja","Sésamo","Sulfitos"] },
-    { plato:"Pan bao con pulled pork y encurtidos", seguro:["Gluten"], preguntar:["Soja","Leche","Mostaza","Sulfitos"] },
+    { plato:"Pan bao con pulled pork y encurtidos", seguro:["Gluten"], preguntar:["Soja","Lácteos","Mostaza","Sulfitos"] },
     { plato:"Arroz a banda", seguro:["Pescado"], preguntar:["Crustáceos","Moluscos","Huevo (alioli)"] },
     { plato:"Arroz de secreto y setas", seguro:[], preguntar:["Apio (caldo)","Sulfitos"] },
-    { plato:"Tarta Tatin con cremoso de vainilla", seguro:["Gluten","Leche"], preguntar:["Huevo"] }
+    { plato:"Tarta Tatin con cremoso de vainilla", seguro:["Gluten","Lácteos"], preguntar:["Huevo"] }
   ],
   vinos: [
     ["Cava","Cava Vega Medien Brut ecológico","DO Cava · Requena · macabeo y chardonnay. Seco, pero más amable que el brut nature.","6-8 °C"],
@@ -2552,7 +2552,7 @@ DATOS.E01 = {
     { plato:"Puerro otoñal", seguro:["Frutos de cáscara","Apio"], preguntar:[] },
     { plato:"Meloso de puchero con pelota", seguro:["Gluten","Apio"], preguntar:["Huevo"] },
     { plato:"Merluza bajo cero", seguro:["Pescado"], preguntar:[] },
-    { plato:"Tres tartaletas de nuestra pastelería", seguro:["Gluten","Huevo","Leche","Frutos de cáscara"], preguntar:[] }
+    { plato:"Tres tartaletas de nuestra pastelería", seguro:["Gluten","Huevo","Lácteos","Frutos de cáscara"], preguntar:[] }
   ],
   vinos: [
     ["Cava","Cava Vega Medien Brut Nature ecológico","DO Cava · Requena · macabeo y chardonnay. Más de 15 meses de crianza; sin azúcar añadido, cremoso, notas de bollería.","6-8 °C"],
@@ -2594,7 +2594,7 @@ DATOS.E01 = {
  {cat:"alergenos", p:"Un cliente es alérgico a los frutos de cáscara. ¿Qué debe evitar?", c:"El puerro otoñal y las tartaletas", x:["La milhoja y la merluza","Solo el ceviche","Ninguno"], w:"El puerro lleva avellanas garrapiñadas; las tartaletas, frutos de cáscara."},
  {cat:"alergenos", p:"¿Qué alérgeno del meloso de puchero está por confirmar?", c:"Huevo", x:["Gluten","Apio","Pescado"], w:"El meloso lleva gluten y apio; el huevo lo está confirmando cocina."},
  {cat:"alergenos", p:"Un cliente es alérgico al apio. ¿Qué platos no puede tomar?", c:"El puerro otoñal y el meloso de puchero", x:["El ceviche y la merluza","Solo el vermut de gamba","Ninguno"], w:"Apio: puerro otoñal (demi-glace de verduras) y meloso de puchero."},
- {cat:"alergenos", p:"¿Qué alérgeno lleva la milhoja de boniato?", c:"Huevo (allioli)", x:["Gluten","Leche","Ninguno"], w:"La milhoja lleva allioli de ajo asado: huevo."},
+ {cat:"alergenos", p:"¿Qué alérgeno lleva la milhoja de boniato?", c:"Huevo (allioli)", x:["Gluten","Lácteos","Ninguno"], w:"La milhoja lleva allioli de ajo asado: huevo."},
  {cat:"vino", p:"¿Qué se bebe con los snacks?", c:"Cava", x:["Tinto con crianza","Vino blanco","Vermut"], w:"Orden de trabajo, punto 4: agua y cava con los snacks."},
  {cat:"vino", p:"¿Qué se ofrece con el meloso de puchero?", c:"Cava rosado o tinto joven", x:["Tinto con crianza","Vino dulce","Solo agua"], w:"Con el arroz: cava rosado o tinto joven."},
  {cat:"vino", p:"¿Cuál es hoy el blanco de la comarca?", c:"Bahía de Dénia (moscatel seco, Bodegas Xaló)", x:["J. Fernando Verdejo","Nuviana blanco","Terra del Mañá"], w:"Bahía de Dénia: DO Alicante, moscatel de Alejandría seco. El vino «de casa»."},
@@ -2609,6 +2609,105 @@ DATOS.E01 = {
  {cat:"est", est:"MA", p:"¿Cuántos comensales y mesas hay hoy?", c:"16 pax en 4 mesas", x:["30 pax en 6 mesas","19 pax en 4 mesas","12 pax en 3 mesas"], w:"Orden de trabajo: 16 pax, 4 mesas, apertura a las 14:00 h."},
  {cat:"est", est:"CA", p:"¿Quién sirve el aperitivo en mesa?", c:"Comedor, con el vermut que prepara Barra", x:["Barra, desde la barra","El Maître","Los Sumilleres"], w:"Barra prepara la bandeja; Comedor sirve en mesa."},
  {cat:"est", est:"CF", p:"¿A qué hora es la comida de familia y para cuántos?", c:"A las 12:30 h, para 30 comensales", x:["A las 14:00 h, para 16","Al acabar el servicio","A las 11:00 h, para 18"], w:"Placares: 12:30 h, 30 comensales (sala, cocina y profesorado)."},
+ {cat:"est", est:"TR", p:"¿Qué hace el Transfer con el pan?", c:"Lo sube a cocina para hornearlo y lo recoge; Comedor lo sirve", x:["Lo sirve él en las mesas","Lo deja en la barra","Nada: lo trae cocina"], w:"Orden de trabajo, punto 3.1."}
+  ]
+};
+
+DATOS.E02 = {
+  ot: "OT-E1 · Evento «Conselleria de Deportes» · marcaje progresivo", tipo: "Emplatado; arroz a la rusa desde el bufé",
+  pax: null, apertura: "14:00 h", mesas: null, alumnos: 17,
+  brigada: {MA:1,SU:3,BA:2,CA:7,CF:3,TR:1},
+  alergenosConfirmados: true,
+  notaAlergenos: "Hoja de alérgenos de cocina. El café no tiene alérgenos, salvo la leche o la bebida vegetal.",
+  montajeBase: "Muletón, mantel y cubremantel · plato peana · servilleta doblada en el centro del cubierto · primeros cubiertos · plato de pan a la izquierda (cuchillo de mantequilla, opcional) · copa de agua: solo esta, las de vino y cava salen del bufé de copas · salero y pimentero. El resto de cubiertos se marca en cada pase.",
+  pases: [
+    { n:"Aperitivo", platos:["Vermut rojo con sifón de soda","Aceitunas"],
+      marcaje:"Sin cubiertos.", nota:"Se sirve en la barra: lo preparan y lo sirven los alumnos de Barra. La botella no se lleva a la mesa. Hielo con pinzas; piel de naranja.", copa:"Vaso bodega corto con hielo (en la barra)" },
+    { n:"1. Entrantes (un solo pase)", platos:["Tartar de salmón con mango y vinagreta de jengibre","Timbal de maíz y granada","Pan bao con mechada"],
+      marcaje:"Ya marcados en el montaje: tenedor de postre → izq. · cuchillo de postre → dcha.", nota:"Los tres en pizarra. El pan bao se come con la mano.", copa:"Agua + vino blanco" },
+    { n:"2. Arroz", platos:["Arroz de fesols i naps"],
+      marcaje:"Tras desbarasar la pizarra: plato peana · cuchara sopera → dcha.", nota:"Servicio a la rusa desde el bufé (cazuela blanca): se emplata en el bufé y se pone al cliente por su derecha. Meloso o caldoso: cuchara (Ficha 21).", copa:"Cava rosado o vino blanco" },
+    { n:"3. Segundo, a elegir", platos:["Lubina a la espalda","Rabo de toro"],
+      marcaje:"Según la comanda. Lubina: pala de pescado → dcha. y tenedor de pescado → izq. · Rabo de toro: cuchillo trinchero → dcha. y tenedor trinchero → izq.", nota:"La comanda la toma el jefe de rango (un camarero de esa mesa) y la pasa a cocina con nº de mesa y de comensal. Loza: lubina en trinchero blanco y rabo en trinchero verde, los dos sobre peana.", copa:"Lubina: vino blanco · Rabo: vino tinto" },
+    { n:"4. Postre", platos:["Chocoplátano"],
+      marcaje:"Cuchara de postre → dcha. · tenedor de postre → izq.", nota:"Lo emplata el repostero; sala solo lo pasa. Antes: retirar saleros, plato de pan y copas; quitar migas.", copa:"El vino que les quede, o cava si lo piden" }
+  ],
+  rutina: [
+    ["CA","Comedor","Desbarasa el plato anterior y sus cubiertos (Fichas 18 y 19)."],
+    ["CA","Comedor","Marca los cubiertos del plato siguiente, sin pasar la mano por delante del cliente (Fichas 20 y 21). En el segundo, según la comanda de cada comensal."],
+    ["SU","Sumilleres","Sirven o reponen el vino del plato siguiente, con la copa del bufé."],
+    ["MA","Maître","Comprueba que la mesa está marcada y pide la «marcha» a cocina."],
+    ["TR","Transfer","Avisa del plato en el pase; Comedor lo recoge y sirve por la derecha, todos los comensales a la vez."]
+  ],
+  alergenos: [
+    { plato:"Vermut rojo con sifón de soda", seguro:["Sulfitos"], preguntar:[] },
+    { plato:"Tartar de salmón con mango y vinagreta de jengibre", seguro:["Pescado","Soja"], preguntar:[] },
+    { plato:"Timbal de maíz y granada", seguro:["Lácteos"], preguntar:[] },
+    { plato:"Pan bao con mechada", seguro:["Gluten","Soja","Sésamo"], preguntar:[] },
+    { plato:"Arroz de fesols i naps", seguro:["Apio"], preguntar:[] },
+    { plato:"Lubina a la espalda", seguro:["Pescado","Sulfitos"], preguntar:[] },
+    { plato:"Rabo de toro", seguro:["Gluten","Apio","Sulfitos"], preguntar:[] },
+    { plato:"Chocoplátano", seguro:["Gluten","Lácteos","Frutos de cáscara"], preguntar:[] }
+  ],
+  vinos: [
+    ["Cava","Cava Vega Medien Brut Nature ecológico","DO Cava · Requena · macabeo y chardonnay. Más de 15 meses de crianza; sin azúcar añadido, cremoso, notas de bollería.","6-8 °C"],
+    ["Blanco","Marina Alta","DO Alicante · Bodegas Bocopa · moscatel de Alejandría (seco). Muy aromático y fresco, flores blancas, toque anisado.","7-10 °C"],
+    ["Blanco","Bahía de Dénia","DO Alicante · Bodegas Xaló · moscatel de Alejandría (seco). Fruta blanca, jazmín y azahar; final ligeramente amargo. El vino «de casa».","7-10 °C"],
+    ["Blanco","Estenas blanco","DO Utiel-Requena · Vera de Estenas · macabeo y chardonnay. Fruta de hueso madura, fondo floral; fino, con buena acidez y algo más de cuerpo.","9 °C"],
+    ["Rosado","Cava Vega Medien Rosado ecológico","DO Cava · Requena · garnacha. 12 meses de crianza; fruta roja, cremoso y fresco.","6-8 °C"],
+    ["Tinto","Terra del Mañá tinto","DO Alicante · Coop. Sta. Catalina del Mañán · monastrell. Joven y fresco, fruta roja (fresa silvestre).","14-16 °C"],
+    ["Tinto","Santpere tinto","DO Valencia · Moixent · tintas de la zona. Fruta madura, cuerpo medio.","15-16 °C"],
+    ["Tinto","Viña Albali Reserva","DO Valdepeñas · Félix Solís · tempranillo. 12 meses en roble americano y botella; vainilla, fruta en compota, tanino pulido.","16-17 °C"]
+  ],
+  vinosNota: "Acto institucional: blancos, cava y dos tintos de la Comunitat Valenciana. En mesa solo está la copa de agua. El sumiller coge del bufé una borgoña (blanco, rosado o tinto) o una flauta (cava), la lleva en bandeja y la coloca a la derecha de la de agua. Si el cliente cambia de vino, copa nueva del bufé. Junto a cada mesa, un pie con su champanera (hielo pilé y agua).",
+  estaciones: {
+    SU:{ clave:"Bufé de copas y champaneras; vino de cada pase según la orden de trabajo y la comanda del segundo; retirar las copas que ya no se usen.",
+         f1:"Vinos a temperatura; bufé de copas montado cerca de la bodega (borgoñas y flautas, 1,1 por comensal); un pie con champanera (hielo pilé y agua) junto a cada mesa; carta de vinos del día.",
+         f2:"Recomendación y maridaje; copa del bufé llevada en bandeja, a la derecha de la de agua; presentación, apertura y escanciado. Blanco con los entrantes; cava rosado o blanco con el arroz; blanco con la lubina y tinto con el rabo de toro, según la comanda.",
+         f3:"Retirada de copas con bandeja; repaso de cristalería; recogida de champaneras y del bufé." },
+    BA:{ clave:"Aperitivo en la barra (vermut con sifón y aceitunas); refrescos, cervezas y agua; cafés e infusiones; anotar consumiciones.",
+         f1:"Cafetera encendida y purgada; café molido; tazas calientes. Refrescos y cervezas fríos. Vermut, sifones y vasos bodega cortos; aceitunas escurridas en boles; naranjas y limones lavados y cortados; hielo: piedras en cubiteras y pilé en champaneras; agua fría en botellas o jarras. Repasar vasos, tazas y bandejas.",
+         f2:"Preparar y servir el aperitivo en la barra (vermut con sifón y aceitunas): la botella no sale a la mesa. Demás bebidas que pide Comedor (refrescos, cervezas, agua), en bandeja. Anotar cada consumición para la factura del Maître. Cafés e infusiones después del postre, nunca a la vez.",
+         f3:"Limpiar la cafetera y las superficies; recuento de consumiciones y de material (Ficha 13)." },
+    CA:{ clave:"Montaje base; comanda del segundo (jefe de rango); bufé del arroz a la rusa; marcaje; servicio y desbarasado.",
+         f1:"Rangos con mesas vestidas y marcadas según el croquis del Maître; aparador montado; bufé del arroz con salvamanteles, cazuela blanca, cucharas de servicio y platos peana.",
+         f2:"Comanda del segundo (lubina o rabo) con nº de mesa y de comensal; arroz emplatado en el bufé y servido por la derecha; marcaje entre platos según la comanda; atención a la mesa." },
+    CF:{ f1:"Comida de familia desde las 12:30 h para 30 comensales (sala, cocina y profesorado): mesas limpias, mantel o individuales; por comensal plato, cubiertos, vaso y servilleta; en el centro agua, pan, sal, aceite y vinagre. Suben pilé y piedras de hielo, garrafas de agua y los palilleros." },
+    TR:{ f1:"Subir el pan a cocina para hornearlo y recogerlo; office y pase revisados; bandejas preparadas; tiempos de salida acordados con cocina." }
+  },
+  preguntas: [
+ {cat:"marcaje", p:"¿Dónde se sirve hoy el aperitivo?", c:"En la barra: lo preparan y lo sirven los alumnos de Barra", x:["En mesa, mostrando la botella","En el bufé del arroz","Hoy no hay aperitivo"], w:"Orden de trabajo: el vermut se sirve en la barra y la botella no sale a la mesa."},
+ {cat:"marcaje", p:"Al abrir, ¿qué cubiertos están ya en la mesa para los entrantes?", c:"Tenedor de postre (izq.) y cuchillo de postre (dcha.)", x:["Tenedor y cuchillo trinchero","Cuchara sopera a la derecha","Ninguno: se marcan en el pase"], w:"Los entrantes van con los primeros cubiertos del montaje: tenedor y cuchillo de postre."},
+ {cat:"marcaje", p:"¿Qué se marca antes del arroz de fesols i naps?", c:"Plato peana y cuchara sopera a la derecha", x:["Solo tenedor trinchero, a la derecha","Cuchillo y tenedor trinchero","Pala y tenedor de pescado"], w:"Arroz meloso o caldoso: cuchara (Ficha 21), sobre plato peana."},
+ {cat:"marcaje", p:"¿Cómo se sirve hoy el arroz?", c:"A la rusa: se emplata en el bufé y se pone al cliente por su derecha", x:["En fuente, en el centro de la mesa","Emplatado en cocina","A la inglesa, por la izquierda"], w:"Comedor monta el bufé con la cazuela blanca y emplata allí; se sirve por la derecha."},
+ {cat:"marcaje", p:"Un cliente ha pedido rabo de toro. ¿Qué se le marca?", c:"Cuchillo trinchero a la derecha y tenedor trinchero a la izquierda", x:["Pala y tenedor de pescado","Cuchara sopera a la derecha","Solo tenedor trinchero"], w:"Rabo de toro: cuchillo y tenedor trinchero."},
+ {cat:"marcaje", p:"Un cliente ha pedido lubina. ¿Qué se le marca?", c:"Pala de pescado a la derecha y tenedor de pescado a la izquierda", x:["Cuchillo y tenedor trinchero","Cuchara sopera a la derecha","Solo tenedor de pescado"], w:"Lubina a la espalda: pala y tenedor de pescado."},
+ {cat:"marcaje", p:"¿Por qué la comanda del segundo lleva el número de comensal?", c:"Para servir a cada cliente su plato (lubina o rabo) y marcarle sus cubiertos sin preguntar", x:["Para la factura","Para el orden de los vinos","No hace falta ponerlo"], w:"Con el nº de mesa y de comensal, Comedor sabe qué marcar y qué servir a cada uno."},
+ {cat:"marcaje", p:"¿Qué se marca antes del chocoplátano?", c:"Cuchara de postre a la derecha y tenedor de postre a la izquierda", x:["Tenedor y cuchillo de postre","Nada: se come con la mano","Cucharilla de café"], w:"Postre: cuchara de postre a la derecha y tenedor de postre a la izquierda."},
+ {cat:"marcaje", p:"¿En qué loza salen los entrantes?", c:"En pizarra, los tres", x:["En bola de cristal","En plato hondo","En la cazuela blanca"], w:"Tartar, timbal y pan bao salen en pizarra, en un solo pase."},
+ {cat:"marcaje", p:"Antes del postre, ¿qué hay que hacer en la mesa?", c:"Retirar saleros, plato de pan y copas, y quitar las migas", x:["Cambiar el mantel","Retirar la copa de agua y servir el café","Nada"], w:"Antes del postre: fuera saleros, plato de pan y copas que no se usan; se quitan las migas."},
+ {cat:"alergenos", p:"Un cliente es celíaco. ¿Qué platos llevan gluten?", c:"El pan bao, el rabo de toro y el chocoplátano", x:["El arroz y la lubina","Solo el pan bao","El timbal y el tartar"], w:"Gluten: pan bao con mechada, rabo de toro y chocoplátano."},
+ {cat:"alergenos", p:"Un cliente es alérgico al sésamo. ¿Qué no puede tomar?", c:"El pan bao con mechada", x:["El timbal de maíz","El tartar de salmón","Nada: hoy no hay sésamo"], w:"El pan bao lleva gluten, soja y sésamo."},
+ {cat:"alergenos", p:"Un cliente no toma lácteos. ¿Qué platos los llevan?", c:"El timbal de maíz y el chocoplátano", x:["El tartar y la lubina","Solo el chocoplátano","El arroz y el rabo"], w:"Lácteos: timbal de maíz y granada, y chocoplátano."},
+ {cat:"alergenos", p:"Un cliente es alérgico al apio. ¿Qué debe evitar?", c:"El arroz de fesols i naps y el rabo de toro", x:["La lubina y el tartar","Solo el rabo de toro","Nada: hoy no hay apio"], w:"Apio: arroz de fesols i naps y rabo de toro."},
+ {cat:"alergenos", p:"Un cliente alérgico al pescado elige segundo. ¿Qué puede tomar?", c:"El rabo de toro", x:["La lubina a la espalda","Cualquiera de los dos","Ninguno"], w:"La lubina lleva pescado; el rabo lleva gluten, apio y sulfitos."},
+ {cat:"alergenos", p:"¿Qué alérgeno lleva el vermut del aperitivo?", c:"Sulfitos", x:["Gluten","Lácteos","Ninguno"], w:"Vermut: sulfitos."},
+ {cat:"alergenos", p:"Un cliente es alérgico a la soja. ¿Qué entrantes no puede tomar?", c:"El tartar de salmón y el pan bao", x:["El timbal de maíz","Solo el pan bao","Ninguno"], w:"Soja: tartar de salmón (vinagreta) y pan bao."},
+ {cat:"vino", p:"¿Qué vino se sirve con los entrantes?", c:"Vino blanco", x:["Tinto con crianza","Cava rosado","Vermut"], w:"Orden de trabajo: agua y vino blanco con los entrantes."},
+ {cat:"vino", p:"Con el arroz de fesols i naps, ¿qué se ofrece?", c:"Cava rosado o vino blanco", x:["Tinto reserva","Vino dulce","Solo agua"], w:"Con el arroz: cava rosado o blanco."},
+ {cat:"vino", p:"Con el segundo, ¿cómo se decide el vino?", c:"Según la comanda: blanco con la lubina y tinto con el rabo de toro", x:["Tinto para todos","Blanco para todos","Cava para todos"], w:"El vino del segundo depende de lo que ha pedido cada comensal."},
+ {cat:"vino", p:"Hoy hay dos blancos de moscatel de la comarca. ¿Cuáles?", c:"Bahía de Dénia y Marina Alta", x:["Estenas y Marina Alta","Bahía de Dénia y Estenas","J. Fernando Verdejo y Nuviana"], w:"Los dos son DO Alicante, de moscatel de Alejandría seco."},
+ {cat:"vino", p:"¿Cuál de los tres tintos de hoy es reserva?", c:"Viña Albali Reserva (DO Valdepeñas)", x:["Santpere tinto","Terra del Mañá tinto","Ninguno"], w:"Viña Albali Reserva: 12 meses en roble americano y botella."},
+ {cat:"vino", p:"El Estenas blanco, ¿de qué uvas es?", c:"Macabeo y chardonnay", x:["Moscatel","Verdejo","Sauvignon blanc"], w:"DO Utiel-Requena · Vera de Estenas · macabeo y chardonnay."},
+ {cat:"vino", p:"¿A qué temperatura se sirve el Viña Albali Reserva?", c:"16-17 °C", x:["6-8 °C","10-12 °C","20-22 °C"], w:"Tinto reserva: 16-17 °C."},
+ {cat:"est", est:"SU", p:"En una mesa, uno pide lubina y otro rabo de toro. ¿Qué copas llevas?", c:"Una borgoña para cada uno: blanco para la lubina y tinto para el rabo", x:["Flautas para los dos","La misma copa para los dos vinos","Ninguna: beben agua"], w:"Borgoña para blanco, rosado y tinto; el vino, según la comanda."},
+ {cat:"est", est:"SU", p:"¿Cuántas champaneras se preparan?", c:"Una por mesa, en su pie, con hielo pilé y agua", x:["Una para todo el comedor","Dos por mesa","Ninguna"], w:"Orden de trabajo: un pie con champanera junto a cada mesa."},
+ {cat:"est", est:"BA", p:"¿Se lleva la botella de vermut a la mesa?", c:"No: el aperitivo se sirve en la barra", x:["Sí, se muestra al cliente","Solo si el cliente la pide","Sí, en la champanera"], w:"Hoy el vermut se prepara y se sirve en la barra."},
+ {cat:"est", est:"BA", p:"¿Qué cítrico va en el vermut rojo?", c:"Piel de naranja", x:["Piel de limón","Rodaja de pomelo","Ninguno"], w:"Vermut rojo: piel de naranja."},
+ {cat:"est", est:"CA", p:"¿Quién toma la comanda del segundo?", c:"El jefe de rango (un camarero de esa mesa), con nº de mesa y de comensal", x:["El Maître, al dar la bienvenida","El Transfer, en el pase","Barra"], w:"Orden de trabajo: la toma el jefe de rango y la pasa a cocina."},
+ {cat:"est", est:"CA", p:"¿Qué lleva el bufé del arroz?", c:"Salvamanteles, cazuela blanca, cucharas de servicio y platos peana", x:["Fuentes y pinzas","Solo la cazuela","Las copas de vino"], w:"Comedor monta el bufé y sirve el arroz a la rusa."},
+ {cat:"est", est:"MA", p:"Antes de pedir la «marcha» del segundo, ¿qué compruebas?", c:"Que cada comensal tiene marcados los cubiertos de su plato (lubina o rabo)", x:["Que han pagado","Que ya tienen el café","Nada: se pide al acabar el arroz"], w:"El marcaje del segundo depende de la comanda de cada comensal."},
+ {cat:"est", est:"CF", p:"¿Cuántos alumnos atienden hoy la comida de familia?", c:"3, con la profesora", x:["4","2","Todo Comedor"], w:"Orden de trabajo: los 3 alumnos del grupo Familia; después pasan a sala."},
  {cat:"est", est:"TR", p:"¿Qué hace el Transfer con el pan?", c:"Lo sube a cocina para hornearlo y lo recoge; Comedor lo sirve", x:["Lo sirve él en las mesas","Lo deja en la barra","Nada: lo trae cocina"], w:"Orden de trabajo, punto 3.1."}
   ]
 };
