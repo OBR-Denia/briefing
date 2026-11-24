@@ -143,7 +143,7 @@ footer{font-size:.82rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 1
   <main id="view"><section class="sheet"><h2>Esta vista previa no puede abrir la app</h2><p>Estás viendo el archivo en una vista previa, que no ejecuta la aplicación. Pasa a menudo en iPhone al abrirlo desde WhatsApp, Correo o Archivos.</p><p>Pide al profesor el enlace de la app y ábrelo en Safari o Chrome.</p></section></main>
   <footer>
     <span>OBR · 1º CFGM Servicios en Restauración · CIPFP Dénia</span>
-    <span>Prototipo v0.5.2 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
+    <span>Prototipo v0.5.3 · <button class="linkbtn" id="toTeacher" type="button">Profesorado</button></span>
   </footer>
 </div>
 
@@ -2709,6 +2709,91 @@ DATOS.E02 = {
  {cat:"est", est:"MA", p:"Antes de pedir la «marcha» del segundo, ¿qué compruebas?", c:"Que cada comensal tiene marcados los cubiertos de su plato (lubina o rabo)", x:["Que han pagado","Que ya tienen el café","Nada: se pide al acabar el arroz"], w:"El marcaje del segundo depende de la comanda de cada comensal."},
  {cat:"est", est:"CF", p:"¿Cuántos alumnos atienden hoy la comida de familia?", c:"3, con la profesora", x:["4","2","Todo Comedor"], w:"Orden de trabajo: los 3 alumnos del grupo Familia; después pasan a sala."},
  {cat:"est", est:"TR", p:"¿Qué hace el Transfer con el pan?", c:"Lo sube a cocina para hornearlo y lo recoge; Comedor lo sirve", x:["Lo sirve él en las mesas","Lo deja en la barra","Nada: lo trae cocina"], w:"Orden de trabajo, punto 3.1."}
+  ]
+};
+
+DATOS.S01 = {
+  ot: "OT-1 · Menú 1 · marcaje progresivo", tipo: "Emplatado (a la americana)",
+  pax: null, apertura: null, mesas: null, alumnos: 17,
+  brigada: {MA:1,SU:3,BA:2,CA:6,CF:4,TR:1},
+  alergenosConfirmados: false,
+  notaAlergenos: "Todavía no hay hoja de alérgenos de cocina para este menú: la lista sale del nombre de los platos. El postre no figura en el menú; cocina lo confirma.",
+  montajeBase: "Muletón, mantel y cubremantel · plato peana · servilleta doblada en el centro del cubierto · primeros cubiertos · plato de pan a la izquierda (cuchillo de mantequilla, opcional) · copa de agua, de vino blanco y de vino tinto · salero y pimentero. Solo se colocan los primeros cubiertos: el resto se marca en cada pase.",
+  pases: [
+    { n:"1. Entrantes", platos:["Filete ruso con pan bao y salsa BBQ","Gazpacho de remolacha","Rosquilletas de cominos y olivas negras"],
+      marcaje:"Tenedor de postre → izq. · cuchillo de postre → dcha. · cuchara de consomé/crema → dcha., exterior (opcional).", nota:"El pan bao y las rosquilletas se comen con la mano. La cuchara de crema, solo si el gazpacho sale en bol; en vaso o chupito, sin cubierto.", copa:"Agua + cava o vino blanco (recomendado: Cava Vega Medien Brut)" },
+    { n:"2. Pasta", platos:["Tagliatelle al pesto"],
+      marcaje:"Tenedor trinchero → dcha. · cuchara sopera → izq.", nota:"Pasta larga (Ficha 21): tenedor a la derecha y cuchara sopera a la izquierda.", copa:"Vino blanco (recomendado: VQ Sauvignon Blanc)" },
+    { n:"3. Pescado", platos:["Jurel a la bilbaína sobre cama de panadera"],
+      marcaje:"Pala de pescado → dcha. · tenedor de pescado → izq.", nota:"Pescado azul con refrito de ajo, guindilla y vinagre.", copa:"Vino blanco (recomendado: J. Fernando Verdejo)" },
+    { n:"4. Carne", platos:["Wonton relleno de carrillera estofada y peras al vino"],
+      marcaje:"Cuchillo trinchero → dcha. · tenedor trinchero → izq.", nota:"Antes del pase: retirar la copa de blanco si ya no se usa.", copa:"Vino tinto (recomendado: J. Fernando Tempranillo 12 meses)" },
+    { n:"5. Postre", platos:["Postre del día (no figura en el menú: confirmar con cocina)"],
+      marcaje:"Según el postre (Ficha 21): cuchara y/o tenedor de postre.", nota:"Antes: retirar saleros, plato de pan y copas que ya no se usan; quitar migas.", copa:"Vino dulce o cava, si lo hay" }
+  ],
+  rutina: [
+    ["CA","Comedor","Desbarasa el plato anterior y sus cubiertos (Fichas 18 y 19)."],
+    ["CA","Comedor","Marca los cubiertos del plato siguiente, sin pasar la mano por delante del cliente (Fichas 20 y 21)."],
+    ["SU","Sumilleres","Sirven o reponen el vino del plato siguiente."],
+    ["MA","Maître","Comprueba que la mesa está marcada y pide la «marcha» a cocina."],
+    ["TR","Transfer","Avisa del plato en el pase; Comedor lo recoge y sirve por la derecha, todos los comensales a la vez."]
+  ],
+  alergenos: [
+    { plato:"Filete ruso con pan bao y salsa BBQ", seguro:["Gluten"], preguntar:["Huevo","Soja","Mostaza","Sésamo","Sulfitos"] },
+    { plato:"Gazpacho de remolacha", seguro:[], preguntar:["Gluten (pan)","Sulfitos (vinagre)"] },
+    { plato:"Rosquilletas de cominos y olivas negras", seguro:["Gluten"], preguntar:["Sésamo"] },
+    { plato:"Tagliatelle al pesto", seguro:["Gluten","Lácteos"], preguntar:["Huevo (pasta)","Frutos de cáscara"] },
+    { plato:"Jurel a la bilbaína sobre cama de panadera", seguro:["Pescado"], preguntar:["Sulfitos (vinagre)"] },
+    { plato:"Wonton relleno de carrillera estofada y peras al vino", seguro:["Gluten","Sulfitos"], preguntar:["Huevo","Apio","Soja"] },
+    { plato:"Postre del día", seguro:[], preguntar:["Lo confirma cocina"] }
+  ],
+  vinos: [
+    ["Cava","Cava Vega Medien Brut ecológico","DO Cava · Requena · macabeo y chardonnay. Brut: seco pero más amable que el brut nature.","6-8 °C"],
+    ["Blanco","VQ Sauvignon Blanc Clásico","IGP VT Castilla · sauvignon blanc. Herbáceo y tropical, acidez viva.","7-9 °C"],
+    ["Blanco","J. Fernando Verdejo","DO Rueda · verdejo. Piña, melocotón, cítricos y matiz herbáceo; fresco y persistente.","7-9 °C"],
+    ["Blanco","Bahía de Dénia","DO Alicante · Bodegas Xaló · moscatel de Alejandría (seco). Fruta blanca, jazmín y azahar; final ligeramente amargo. El vino «de casa».","7-10 °C"],
+    ["Rosado","Cava Vega Medien Rosado ecológico","DO Cava · Requena · garnacha. 12 meses de crianza; fruta roja, cremoso y fresco. Se sirve en copa de blanco.","6-8 °C"],
+    ["Tinto","VQ Rojo Tango Syrah","IGP VT Castilla · syrah. Joven, afrutado y especiado, tanino suave.","14-16 °C"],
+    ["Tinto","Santpere tinto","DO Valencia · Moixent · tintas de la zona. Fruta madura, cuerpo medio.","15-16 °C"],
+    ["Tinto","J. Fernando Tempranillo 12 meses","IGP VT Castilla · El Toboso · tempranillo. 12 meses en barrica; fruta negra madura, vainilla y tostados; tanino carnoso.","16-18 °C"]
+  ],
+  vinosNota: "Maridaje recomendado: cava brut con los entrantes (alternativa: cava rosado) · VQ Sauvignon Blanc con la pasta (alternativa: J. Fernando Verdejo) · J. Fernando Verdejo con el jurel (alternativa: Bahía de Dénia) · J. Fernando Tempranillo 12 meses con la carne (alternativa: Santpere). Copas en mesa: la de agua arriba y centrada, la de tinto a su derecha y la de blanco a la derecha de esta. Al servir el primer vino se retira la copa que el cliente no vaya a usar; si cambia de vino, copa nueva de la reserva.",
+  estaciones: {
+    SU:{ clave:"Copas del montaje; vino de cada pase según el maridaje del día; retirar las copas que ya no se usen.",
+         f1:"Bodega revisada; vinos a temperatura; copas de agua, blanco y tinto repasadas y colocadas; reserva del 10 % y flautas en el aparador; carta de vinos del día.",
+         f2:"Recomendación y maridaje: cava con los entrantes, VQ Sauvignon Blanc con la pasta, J. Fernando Verdejo con el jurel y J. Fernando Tempranillo 12 meses con la carne. Presentación, apertura y escanciado. Al servir el primer vino, retirar la copa que el cliente no vaya a usar." },
+    BA:{ clave:"Aperitivo (refrescos, cervezas, vermut), agua durante la comida, cafés, infusiones y licores; anotar consumiciones.",
+         f1:"Encender y purgar la cafetera; moler café; calentar tazas. Enfriar agua, refrescos y cervezas; hielo y rodajas de limón. Botellas o jarras de agua fría para Comedor. Repasar vasos, tazas, platillos, cucharillas y bandejas.",
+         f2:"Preparar las bebidas que pide Comedor (aperitivo: refrescos, cervezas, vermut; agua durante la comida) y entregarlas en bandeja. Anotar cada consumición para la factura del Maître. Cafés, infusiones y licores después del postre, nunca a la vez." },
+    CF:{ f1:"Placares para la comida de familia (sala, cocina y profesorado): mesas limpias, mantel o individuales; por comensal plato, cubiertos, vaso y servilleta; en el centro agua, pan, sal, aceite y vinagre. Fuentes y cubiertos de servicio." }
+  },
+  preguntas: [
+ {cat:"marcaje", p:"¿Qué se marca antes del tagliatelle al pesto?", c:"Tenedor trinchero a la derecha y cuchara sopera a la izquierda", x:["Tenedor a la izquierda y cuchillo a la derecha","Solo tenedor trinchero, a la derecha","Cuchara de postre a la derecha"], w:"Pasta larga (Ficha 21): tenedor a la derecha y cuchara sopera a la izquierda."},
+ {cat:"marcaje", p:"¿Qué se marca antes del jurel a la bilbaína?", c:"Pala de pescado a la derecha y tenedor de pescado a la izquierda", x:["Cuchillo y tenedor trinchero","Cuchara sopera a la derecha","Solo tenedor de pescado"], w:"Pescado: pala y tenedor de pescado."},
+ {cat:"marcaje", p:"¿Qué se marca antes del wonton de carrillera?", c:"Cuchillo trinchero a la derecha y tenedor trinchero a la izquierda", x:["Pala y tenedor de pescado","Tenedor y cuchillo de postre","Nada: se come con la mano"], w:"Carne: cuchillo y tenedor trinchero."},
+ {cat:"marcaje", p:"¿Cuándo se coloca la cuchara de crema para el gazpacho?", c:"Solo si el gazpacho sale en bol; en vaso o chupito, sin cubierto", x:["Siempre","Nunca","Con el postre"], w:"Orden de trabajo: la cuchara de crema es opcional y depende de cómo salga el gazpacho."},
+ {cat:"marcaje", p:"¿Qué entrantes se comen con la mano?", c:"El filete ruso con pan bao y las rosquilletas", x:["El gazpacho","Ninguno","Los tres"], w:"Pan bao y rosquilletas se comen con la mano."},
+ {cat:"marcaje", p:"Antes de servir la carne, ¿qué copa se retira?", c:"La de vino blanco, si ya no se usa", x:["La de agua","La de vino tinto","Ninguna"], w:"Orden de trabajo: antes del pase de carne, retirar la copa de blanco si ya no se usa."},
+ {cat:"marcaje", p:"¿Qué cubiertos están en la mesa al abrir?", c:"Tenedor y cuchillo de postre, y la cuchara de crema si el gazpacho va en bol", x:["Tenedor y cuchillo trinchero","Pala y tenedor de pescado","Ninguno"], w:"Solo se colocan los primeros cubiertos, los de los entrantes."},
+ {cat:"marcaje", p:"El postre no figura en el menú. ¿Qué se marca?", c:"Lo que pida el postre que confirme cocina: cuchara y/o tenedor de postre", x:["Siempre cuchara de postre","Nada","Cucharilla de café"], w:"Ficha 21: el marcaje del postre depende del postre."},
+ {cat:"marcaje", p:"Antes del postre, ¿qué hay que hacer en la mesa?", c:"Retirar saleros, plato de pan y copas que ya no se usan, y quitar las migas", x:["Cambiar el mantel","Retirar la copa de agua y servir el café","Nada"], w:"Antes del postre: fuera saleros, plato de pan y copas sin uso; se quitan las migas."},
+ {cat:"alergenos", p:"¿Qué plato de este menú NO lleva gluten seguro?", c:"El jurel a la bilbaína", x:["El tagliatelle al pesto","El wonton de carrillera","Las rosquilletas"], w:"Llevan gluten el pan bao, las rosquilletas, la pasta y el wonton. El jurel no, aunque hay que confirmarlo con cocina."},
+ {cat:"alergenos", p:"Un cliente es alérgico al pescado. ¿Qué plato no puede tomar?", c:"El jurel a la bilbaína", x:["El tagliatelle al pesto","El gazpacho de remolacha","Ninguno"], w:"El jurel es pescado azul."},
+ {cat:"alergenos", p:"Un cliente no toma lácteos. ¿Qué plato los lleva seguro?", c:"El tagliatelle al pesto (queso)", x:["El gazpacho de remolacha","El jurel a la bilbaína","Ninguno"], w:"El pesto lleva queso."},
+ {cat:"alergenos", p:"Hoy los alérgenos son provisionales. Un cliente pregunta si el wonton lleva huevo. ¿Qué haces?", c:"Aviso al Maître y se confirma con cocina antes de servir", x:["Le digo que no, que es carne","Le digo que sí, por si acaso","Lo sirvo y que lo aparte"], w:"Con una alergia nunca se improvisa: Maître y cocina confirman."},
+ {cat:"vino", p:"¿Qué vino se recomienda con el tagliatelle al pesto?", c:"VQ Sauvignon Blanc: su toque herbáceo repite la albahaca", x:["J. Fernando Tempranillo 12 meses","Cava rosado","Santpere tinto"], w:"El sauvignon blanc repite la albahaca y su acidez corta el aceite y el queso."},
+ {cat:"vino", p:"¿Qué vino se recomienda con el jurel a la bilbaína?", c:"J. Fernando Verdejo", x:["Santpere tinto","VQ Rojo Tango Syrah","Cava rosado"], w:"Pescado azul con refrito de ajo y vinagre: blanco con estructura y final amargo."},
+ {cat:"vino", p:"¿Qué tinto acompaña al wonton de carrillera?", c:"J. Fernando Tempranillo 12 meses", x:["VQ Rojo Tango Syrah","Terra del Mañá tinto","Ninguno: va con blanco"], w:"Estofado meloso: tinto con crianza y tanino carnoso."},
+ {cat:"vino", p:"Con los entrantes, ¿qué propone primero el sumiller?", c:"Cava Vega Medien Brut: la burbuja limpia la grasa del filete y la BBQ", x:["Tinto con crianza","Vino dulce","Solo agua"], w:"Selección de vinos: cava brut con los tres entrantes; alternativa, cava rosado."},
+ {cat:"vino", p:"¿Qué copas hay en la mesa al abrir?", c:"Agua, vino blanco y vino tinto", x:["Solo la de agua","Agua y flauta","Ninguna"], w:"Montaje base del Menú 1: copa de agua, de blanco y de tinto."},
+ {cat:"vino", p:"¿Dónde va la copa de tinto?", c:"A la derecha de la de agua; la de blanco, a la derecha de la de tinto", x:["A la izquierda de la de agua","Delante de la de blanco","Detrás de la de agua"], w:"Manual OBR 3.7.5: agua arriba y centrada; tinto a su derecha y blanco a la derecha de esta."},
+ {cat:"vino", p:"El VQ Rojo Tango, ¿de qué uva es?", c:"Syrah", x:["Tempranillo","Monastrell","Garnacha"], w:"IGP VT Castilla · syrah: joven, afrutado y especiado."},
+ {cat:"est", est:"SU", p:"Al servir el primer vino, ¿qué haces con las copas?", c:"Retiro la copa que el cliente no vaya a usar", x:["Las dejo todas hasta el postre","Retiro la de agua","Pongo también la flauta"], w:"Orden de trabajo, punto 7."},
+ {cat:"est", est:"SU", p:"¿En qué copa se sirve el cava rosado?", c:"En copa de blanco", x:["En flauta","En copa de tinto","En vaso"], w:"El rosado se sirve en copa de blanco."},
+ {cat:"est", est:"BA", p:"¿Qué bebidas de aperitivo prepara Barra?", c:"Refrescos, cervezas y vermut, que Comedor lleva en bandeja", x:["Solo cafés","Cava y vino","Nada: no hay aperitivo"], w:"Orden de trabajo, punto 8."},
+ {cat:"est", est:"MA", p:"El menú no trae el postre escrito. ¿Qué haces?", c:"Lo confirmo con cocina antes de abrir, para que Comedor sepa qué marcar", x:["Nada: se marca cuchara siempre","Se lo pregunto al cliente","Lo decido yo"], w:"El marcaje del postre depende del postre (Ficha 21)."},
+ {cat:"est", est:"CA", p:"¿Cuántas copas montas por comensal?", c:"Tres: agua, vino blanco y vino tinto", x:["Solo la de agua","Cuatro, con la flauta","Dos: agua y tinto"], w:"Montaje base del Menú 1."},
+ {cat:"est", est:"CF", p:"¿Cuántos alumnos atienden hoy la comida de familia?", c:"4, con la profesora", x:["3","2","Todo Comedor"], w:"Cuadrante del servicio 4: 4 alumnos en Comedor · Familia."}
   ]
 };
 
